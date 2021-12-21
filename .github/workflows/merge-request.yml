@@ -41,3 +41,4 @@ jobs:
           build: npm run build
           start: npm start
           working-directory: ./frontend
+          config: baseUrl=http://localhost:3000
