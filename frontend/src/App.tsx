@@ -2,6 +2,9 @@ import logo from "./logo.svg";
 import "./App.css";
 import { useEffect } from "react";
 import { error } from "console";
+import { Outlet, Link } from "react-router-dom";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   useEffect(() => {
@@ -15,21 +18,12 @@ function App() {
       .then((response) => console.log(response));
   }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit<code>src / App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          React
-        </a>
-      </header>
+    <div>
+      <h1>Pump Tracker</h1>
+      <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem" }}>
+        <Link to="/workouts">Workouts</Link>
+      </nav>
+      <Outlet />
     </div>
   );
 }
