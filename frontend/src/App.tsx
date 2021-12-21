@@ -1,14 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useEffect } from "react";
+import { error } from "console";
 
 function App() {
+  useEffect(() => {
+    fetch("/api/v1", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((response) => console.log(response));
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Edit<code>src / App.tsx</code> and save to reload.
         </p>
         <a
           className="App-link"
@@ -16,7 +27,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          React
         </a>
       </header>
     </div>
