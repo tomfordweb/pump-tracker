@@ -27,8 +27,13 @@ const WorkoutCreateForm = () => {
           }}
         >
           <Form>
-            <label htmlFor="name">First Name</label>
-            <Field id="name" name="name" placeholder="Workout Name" />
+            <label htmlFor="name">Workout Name</label>
+            <Field
+              id="name"
+              type="text"
+              name="name"
+              placeholder="Workout Name"
+            />
             <label htmlFor="description">Description</label>
             <Field
               id="description"
