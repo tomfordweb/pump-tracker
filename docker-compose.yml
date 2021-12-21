@@ -22,6 +22,13 @@ services:
       context: ./backend
     networks:
       - app-network
+      - priv-network
+    environment:
+      MONGODB_URI: "mongodb://root:example@mongo:27017/"
+    volumes:
+      - ./backend/main.py:/app/main.py
+      - ./backend/requirements.txt:/app/requirements.txt
+    restart: always
     entrypoint:
       [
         "uvicorn",
@@ -36,6 +43,29 @@ services:
     ports:
       - 8000:8000
 
+  mongo:
+    image: mongo
+    restart: always
+    networks:
+      - priv-network
+    expose:
+      - 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - priv-network
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
   proxy:
     image: nginx:stable-alpine
     # build:
@@ -49,4 +79,6 @@ services:
 
 networks:
   app-network:
+    driver: bridge
+  priv-network:
     driver: bridge
