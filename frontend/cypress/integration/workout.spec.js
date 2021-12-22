@@ -2,7 +2,7 @@
 
 describe("/workouts page", () => {
   it('can navigate from homepage to the "workouts" page', () => {
-    cy.visit("http://localhost");
+    cy.visit("/");
     cy.get("nav a").contains("Workouts").click();
     cy.url().should("contain", "workouts");
   });
