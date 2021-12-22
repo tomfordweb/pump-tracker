@@ -10,7 +10,7 @@ services:
       - ./frontend/public:/app/public
       - ./frontend/src:/app/src
       - ./frontend/package-lock.json:/app/package-lock.json
-    entrypoint: ["npm", "start"]
+    command: ["npm", "start"]
     networks:
       - app-network
     ports:

@@ -1,26 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import WorkoutsPage from "./components/WorkoutsPage/WorkoutsPage";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  );
-}
 
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
-    </div>
-  );
-}
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
