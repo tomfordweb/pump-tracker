@@ -4,10 +4,16 @@
 docker-compose up
 ```
 
-# API Documenation
+# Backend
+
+The backend is fully documented and is located at http://localhost/api/v1/docs
+
+## Security
+
+Generating new key to sign JWT tokens
 
 ```
-/api/v1/docs
+openssql rand -hex 32
 ```
 
 # Testing
