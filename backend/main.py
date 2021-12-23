@@ -112,7 +112,7 @@ def create_user_in_database(user: UserCreateRequest):
 
         result = user_collection.insert_one(user.dict())
 
-    return result
+        return result
 
 
 def authenticate_user(fake_db, username: str, password: str):
@@ -188,6 +188,7 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 async def create_user(user: UserCreateRequest):
     """ Create a new account to use the appplication """
     result = create_user_in_database(user)
+
     return {"insertion": result.acknowledged, "key": str(result.inserted_id) }
 
 @app.post("/workouts", response_model=InsertionResponse)
