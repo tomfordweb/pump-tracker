@@ -2,11 +2,12 @@ import os
 from datetime import datetime, timedelta
 from typing import Optional
 
+from email_validator import EmailNotValidError, validate_email
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from pymongo import MongoClient
 
 fake_users_db = {
@@ -37,7 +38,24 @@ class User(BaseModel):
 
 class UserCreateRequest(User):
     """ The request used to create the user """
-    password: str
+    password1: str
+    password2: str
+
+    @validator('username')
+    def username_must_be_alphanumeric(cls, v):
+        assert v.isalnum(), 'must be alphanumeric'
+        return v
+
+    @validator('email')
+    def email_is_a_valid_address(cls, v):
+        validate_email(v)
+        return v
+
+    @validator('password2')
+    def passwords_match(cls, v, values, **kwargs):
+        if 'password1' in values and v != values['password1']:
+            raise ValueError('passwords do not match')
+        return v
 
 class PublicUserInDB(User):
     """ A user Model that can be returned in responses """
@@ -45,7 +63,7 @@ class PublicUserInDB(User):
 
 class InsertionResponse(BaseModel):
     """ A successfuly entered response"""
-    _id: str
+    key: str
     insertion: bool
 
 class PrivateUserInDB(PublicUserInDB):
@@ -74,6 +92,27 @@ app = FastAPI()
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
+
+
+def create_user_in_database(user: UserCreateRequest):
+    with MongoClient(os.getenv('MONGODB_URI')) as client:
+        user_collection = client[DOCUMENT_KEY_BASE][DOCUMENT_KEY_USER]
+
+        if user_collection.find_one( { "email": user.email }):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="The email is already taken",
+            )
+
+        if user_collection.find_one({"username": user.username }):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="The username is already taken",
+            )
+
+        result = user_collection.insert_one(user.dict())
+
+    return result
 
 
 def authenticate_user(fake_db, username: str, password: str):
@@ -148,11 +187,8 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 @app.post("/users", response_model=InsertionResponse)
 async def create_user(user: UserCreateRequest):
     """ Create a new account to use the appplication """
-    with MongoClient(os.getenv('MONGODB_URI')) as client:
-        msg_collection = client[DOCUMENT_KEY_BASE][DOCUMENT_KEY_USER]
-        result = msg_collection.insert_one(user.dict())
-        # TODO: return token
-        return {"insertion": result.acknowledged, "_id": str(result.inserted_id) }
+    result = create_user_in_database(user)
+    return {"insertion": result.acknowledged, "key": str(result.inserted_id) }
 
 @app.post("/workouts", response_model=InsertionResponse)
 async def create_workout(workout: Workout, token:str = Depends(oauth2_scheme)):
@@ -160,4 +196,4 @@ async def create_workout(workout: Workout, token:str = Depends(oauth2_scheme)):
     with MongoClient(os.getenv('MONGODB_URI')) as client:
         msg_collection = client[DOCUMENT_KEY_BASE][DOCUMENT_KEY_WORKOUT]
         result = msg_collection.insert_one(workout.dict())
-        return {"insertion": result.acknowledged, "_id": str(result.inserted_id) }
+        return {"insertion": result.acknowledged, "key": str(result.inserted_id) }
