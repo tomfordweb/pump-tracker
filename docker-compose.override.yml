@@ -23,22 +23,8 @@ services:
       # DO NOT USE THIS IN ANYWHERE OTHER THAN A TESTING OR DEVELOPMENT ENVIRONMENT
       SECRET_KEY: "7880a54f2e77f3d7cac9c6d5387e0821b2a4b8a1c6429adaa1d534ad6f6a7120"
     volumes:
-      - ./backend/main.py:/app/main.py
-      - ./backend/requirements.txt:/app/requirements.txt
+      - ./backend:/pumps
     restart: unless-stopped
-    entrypoint:
-      [
-        "uvicorn",
-        "main:app",
-        "--proxy-headers",
-        "--reload",
-        "--host",
-        "0.0.0.0",
-        "--root-path",
-        "/api/v1",
-      ]
-    ports:
-      - 8000:8000
 
   mongo:
     image: mongo

@@ -15,7 +15,7 @@ services:
     entrypoint:
       [
         "uvicorn",
-        "main:app",
+        "app.main:app",
         "--proxy-headers",
         "--reload",
         "--host",
