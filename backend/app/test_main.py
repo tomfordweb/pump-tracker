@@ -7,8 +7,10 @@ client = TestClient(app)
 
 def test_it_can_create_a_workout():
     response = client.post(
-            "/workouts/",
+            "/workouts",
+            headers={"X-Token": "someToken"},
             json={"name": "My test workout", "description": "Test Workout Descriptoin"}
     )
+
 
     assert response.status_code == 201
