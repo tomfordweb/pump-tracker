@@ -28,7 +28,7 @@ jobs:
       - name: Run tests with pytest
         run: pytest
 
-  build:
+  test-frontend:
     runs-on: ubuntu-latest
     strategy:
       matrix:
