@@ -8,7 +8,7 @@ from .. import crud
 from ..dependencies import (ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user,
                             create_access_token, get_current_active_user,
                             get_db)
-from ..schemas import Token, TokenData, User, UserCreate, Workout
+from ..schemas import Token, TokenData, User, UserBase, UserCreate, Workout
 
 router = APIRouter()
 
@@ -28,12 +28,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/users/me")
+@router.get("/users/me", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     """ Whoami """
     return current_user
 
-@router.post("/users")
+@router.post("/users", response_model=User)
 async def create_user(user: UserCreate, db:Session = Depends(get_db)):
     """ Create a new account to use the appplication """
     if crud.get_user_by_email(db, user.email):

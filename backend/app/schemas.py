@@ -22,6 +22,10 @@ class UserBase(BaseModel):
     username: str
     email: str
 
+    @validator('email')
+    def email_is_a_valid_address(cls, v):
+        validate_email(v)
+        return v
 
 class User(UserBase):
     """ A User that uses the application, authentication is based on this model """
@@ -29,11 +33,6 @@ class User(UserBase):
     username: str
     full_name: Optional[str] = None
     workouts: List[Workout] = []
-
-    @validator('email')
-    def email_is_a_valid_address(cls, v):
-        validate_email(v)
-        return v
 
     class Config:
         orm_mode = True
