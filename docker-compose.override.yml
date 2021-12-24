@@ -24,7 +24,7 @@ services:
       SECRET_KEY: "7880a54f2e77f3d7cac9c6d5387e0821b2a4b8a1c6429adaa1d534ad6f6a7120"
     volumes:
       - ./backend:/pumps
-    restart: unless-stopped
+    restart: never
 
   proxy:
     image: nginx:stable-alpine
