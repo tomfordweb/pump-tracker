@@ -8,11 +8,10 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
+from . import crud, models, schemas
+from .database import SessionLocal, engine
 from .dependencies import (ACCESS_TOKEN_EXPIRE_MINUTES, DOCUMENT_KEY_WORKOUT,
-                           authenticate_user, create_access_token,
-                           get_database, oauth2_scheme)
-from .models import (InsertionResponse, PrivateUserInDB, PublicUserInDB, Token,
-                     TokenData, User, UserCreateRequest, Workout)
+                           oauth2_scheme)
 from .routers import users, workouts
 
 fake_users_db = {
@@ -26,9 +25,8 @@ fake_users_db = {
 }
 
 
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 app.include_router(users.router)
 app.include_router(workouts.router)
-
-

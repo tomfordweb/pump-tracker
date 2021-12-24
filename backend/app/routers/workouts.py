@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends
 
-from ..dependencies import DOCUMENT_KEY_WORKOUT, get_database, oauth2_scheme
-from ..models import InsertionResponse, Workout
+from ..dependencies import DOCUMENT_KEY_WORKOUT, oauth2_scheme
+from ..schemas import Workout
 
 router = APIRouter()
-@router.post("/workouts", response_model=InsertionResponse)
-async def create_workout(workout: Workout, token:str = Depends(oauth2_scheme)):
+@router.post("/workouts")
+async def create_workout(workout: Workout ):
     """ Create a new workout """
-    msg_collection = get_database()[DOCUMENT_KEY_WORKOUT]
-    result = msg_collection.insert_one(workout.dict())
-    return {"insertion": result.acknowledged, "key": str(result.inserted_id) }
+    return {"Broken": True}
+    # msg_collection = get_database()[DOCUMENT_KEY_WORKOUT]
+    # result = msg_collection.insert_one(workout.dict())
+    # return {"insertion": result.acknowledged, "key": str(result.inserted_id) }

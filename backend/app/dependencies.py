@@ -6,9 +6,11 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 
-from .models import (InsertionResponse, PrivateUserInDB, PublicUserInDB, Token,
-                     TokenData, User, UserCreateRequest, Workout)
+from . import crud
+from .database import SessionLocal, engine
+from .schemas import Token, TokenData, User, UserCreate, Workout
 
 DOCUMENT_KEY_BASE = "pumps"
 DOCUMENT_KEY_WORKOUT = "workout"
@@ -21,51 +23,35 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def get_database():
-    from pymongo import MongoClient
 
-    client = MongoClient(os.getenv('MONGODB_URI'));
-
-    return client[DOCUMENT_KEY_BASE]
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+def get_password_hash(password):
+    return pwd_context.hash(password)
 
-def create_user_in_database(user: UserCreateRequest):
-    user_collection = get_database()[DOCUMENT_KEY_USER]
+def authenticate_user(db:Session, username: str, password: str):
+    user = crud.get_user_by_username(db, username)
 
-    if user_collection.find_one( { "email": user.email }):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The email is already taken",
-        )
-
-    if user_collection.find_one({"username": user.username }):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The username is already taken",
-        )
-
-    result = user_collection.insert_one(user.dict())
-
-    return result
-
-
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
         return False
     return user
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return PrivateUserInDB(**user_dict)
+def get_user(username: str, db: Session = Depends(get_db)):
+    user = crud.get_user_by_username(db, username)
+    return user
 
-async def get_current_user(database, token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -79,7 +65,7 @@ async def get_current_user(database, token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(database, username=token_data.username)
+    user = get_user(token_data.username)
     if user is None:
         raise credentials_exception
     return user
