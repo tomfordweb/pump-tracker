@@ -2,8 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from .. import crud, schemas
-from ..dependencies import (DOCUMENT_KEY_WORKOUT, get_current_active_user,
-                            get_db, oauth2_scheme)
+from ..dependencies import get_current_active_user, get_db
 
 router = APIRouter()
 @router.post("/workouts")
