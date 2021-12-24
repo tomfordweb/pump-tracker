@@ -31,8 +31,8 @@ def get_workouts(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Workout).offset(skip).limit(limit).all()
 
 
-def create_user_workout(db: Session, workout: schemas.WorkoutCreate, user_id: int):
-    db_item = models.Workout(**workout.dict(), owner_id=user_id)
+def create_user_workout(db: Session, workout: schemas.WorkoutCreate, user: schemas.User):
+    db_item = models.Workout(**workout.dict(), owner_id=user.id)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)

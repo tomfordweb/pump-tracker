@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from ..dependencies import DOCUMENT_KEY_WORKOUT, oauth2_scheme
-from ..schemas import Workout
+from .. import crud, schemas
+from ..dependencies import (DOCUMENT_KEY_WORKOUT, get_current_active_user,
+                            get_db, oauth2_scheme)
 
 router = APIRouter()
 @router.post("/workouts")
-async def create_workout(workout: Workout ):
-    """ Create a new workout """
-    return {"Broken": True}
-    # msg_collection = get_database()[DOCUMENT_KEY_WORKOUT]
-    # result = msg_collection.insert_one(workout.dict())
-    # return {"insertion": result.acknowledged, "key": str(result.inserted_id) }
+async def create_workout(workout: schemas.WorkoutCreate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+    workout = crud.create_user_workout(db, workout, current_user)
+    return workout
