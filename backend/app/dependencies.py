@@ -47,11 +47,7 @@ def authenticate_user(db:Session, username: str, password: str):
         return False
     return user
 
-def get_user(username: str, db: Session = Depends(get_db)):
-    user = crud.get_user_by_username(db, username)
-    return user
-
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -65,7 +61,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(token_data.username)
+    user = crud.get_user_by_username(db, token_data.username)
     if user is None:
         raise credentials_exception
     return user

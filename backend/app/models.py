@@ -12,7 +12,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     full_name = Column(String)
     hashed_password = Column(String)
-    disabled = Column(Boolean, default=True)
+    disabled = Column(Boolean, default=False)
 
     workouts = relationship("Workout", back_populates="owner")
 
