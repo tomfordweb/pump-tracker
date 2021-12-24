@@ -5,12 +5,34 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test-backend:
+    runs-on: ubuntu-latest
+    env:
+      # Obviously, do not use this for anything
+      SECRET_KEY: "fcb9aea222d23f0f1cb5c9522cc8fb0bd2b2c3117afd1b95e80874cedce8e30b"
+
+    steps:
+      - uses: actions/checkout@v2
+      # Setup Python (faster than using Python container)
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install py dependencies
+        working-directory: ./backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests with pytest
+        run: pytest
+
+  test-frontend:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [16.x]
-
     steps:
       - uses: actions/checkout@v2
 
@@ -21,7 +43,7 @@ jobs:
           cache: "npm"
           cache-dependency-path: "**/package-lock.json"
 
-      - name: Install dependencies
+      - name: Install js dependencies
         working-directory: ./frontend
         run: npm ci
 
