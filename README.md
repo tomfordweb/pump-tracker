@@ -30,5 +30,21 @@ docker-compose run frontend npm run test
 For now run it locally so you can use cy.open, it would work in the container though..
 
 ```
+TODO
+```
 
+# DBA
+
+## Migrations
+
+### Create a migration
+
+```
+alembic revision -m "name of migration"
+```
+
+### Run a migration
+
+```
+alembic upgrade head
 ```
