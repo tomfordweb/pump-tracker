@@ -35,7 +35,7 @@ async def remove_exercise_from_workout(workout_id:int, current_user: schemas.Use
     # TODO: ensure user owns the workout
     return workouts
 
-@router.post("/workout")
+@router.post("/workouts")
 async def create_workout(workout: schemas.WorkoutCreate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
     workout = crud.create_user_workout(db, workout, current_user)
     return workout

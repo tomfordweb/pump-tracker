@@ -15,7 +15,7 @@ class User(Base):
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
     workouts = relationship("Workout", back_populates="owner")
-    workout_plans = relationship("Plans", back_populates="owner")
+    workout_plans = relationship("Plan", back_populates="owner")
 
 
 workout_plan_association_table = Table('workout_plan', Base.metadata,
@@ -43,7 +43,7 @@ class Plan(Base):
     description = Column(String)
     avatar_id = Column(Integer, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
-    owner = relationship("User", back_populates="plans")
+    owner = relationship("User", back_populates="workout_plans")
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
 

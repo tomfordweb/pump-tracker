@@ -3,42 +3,12 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .. import models
-from ..database import Base
-from ..dependencies import get_db
-from ..main import app
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///.test.db"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-models.Base.metadata.create_all(bind=engine)
-
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-
-client = TestClient(app)
-
-@pytest.fixture
-def truncate_database():
-    session = TestingSessionLocal()
-    session.execute('''DELETE FROM users''')
-    session.execute('''DELETE FROM workouts''')
-    session.commit()
-    session.close()
+from ... import models
+from ...database import Base
+from ...dependencies import get_db
+from ...main import app
+from ..app import TestingSessionLocal, client
+from ..fixtures import truncate_database
 
 
 def test_create_user(truncate_database):
@@ -154,13 +124,3 @@ def test_create_user_rejects_duplicate_email(truncate_database):
     )
     assert response.status_code == 400
     assert "email" in response.text
-
-
-def test_that_an_unauthenticated_user_cannot_create_a_workout():
-    response = client.post(
-            "/workouts",
-            headers={"X-Token": "someToken"},
-            json={"name": "My test workout", "description": "Test Workout Descriptoin"}
-    )
-
-    assert response.status_code == 401
