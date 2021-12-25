@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 from email_validator import validate_email
@@ -9,6 +10,10 @@ class WorkoutBase(BaseModel):
     description: str
 
 class WorkoutCreate(WorkoutBase):
+    pass
+
+class WorkoutPlanWorkoutAssociate(BaseModel):
+    workout_id:int
     pass
 
 class Workout(WorkoutBase):
@@ -72,3 +77,19 @@ class TokenData(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class PlanBase(BaseModel):
+    name: str
+    description: str
+    avatar_id: int
+    owner_id: int
+
+class PlanCreate(PlanBase):
+    pass;
+
+class Plan(PlanBase):
+    id: int
+    date_updated: datetime.date
+    date_created: datetime.date
+    class Config:
+        orm_mode = True

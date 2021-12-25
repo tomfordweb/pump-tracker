@@ -6,6 +6,12 @@ from . import dependencies, models, schemas
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
+def get_workout(db: Session, workout_id: int):
+    return db.query(models.User).filter(models.Workout.id == workout_id).first()
+
+def get_plan(db: Session, plan_id: int):
+    return db.query(models.User).filter(models.Plan.id == plan_id).first()
+
 def get_user_by_username(db: Session, username: str):
     return db.query(models.User).filter(models.User.username == username).first()
 
@@ -29,6 +35,20 @@ def create_user(db: Session, user: schemas.UserCreate):
 def get_workouts(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Workout).offset(skip).limit(limit).all()
 
+def create_user_workout_plan(db: Session, plan: schemas.PlanCreate, user: schemas.User):
+    db_item = models.Plan(**plan.dict(), owner_id=user.id)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+def add_workout_to_user_plan(db: Session, workout: schemas.WorkoutCreate, plan: schemas.Plan, user: schemas.User):
+    db_item = models.Workout(**workout.dict(), owner_id=user.id)
+    db.add(db_item)
+    plan.workouts.append(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
 
 def create_user_workout(db: Session, workout: schemas.WorkoutCreate, user: schemas.User):
     db_item = models.Workout(**workout.dict(), owner_id=user.id)

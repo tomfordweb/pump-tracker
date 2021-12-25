@@ -1,4 +1,5 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -13,10 +14,14 @@ class User(Base):
     full_name = Column(String)
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
-
     workouts = relationship("Workout", back_populates="owner")
     workout_plans = relationship("Plans", back_populates="owner")
 
+
+workout_plan_association_table = Table('workout_plan', Base.metadata,
+    Column('plans_id', ForeignKey('plans.id')),
+    Column('workouts_id', ForeignKey('workouts.id'))
+)
 
 class Workout(Base):
     __tablename__ = "workouts"
@@ -29,7 +34,8 @@ class Workout(Base):
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
 
-class WorkoutPlan(Base):
+
+class Plan(Base):
     __tablename__ = "plans"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -40,3 +46,5 @@ class WorkoutPlan(Base):
     owner = relationship("User", back_populates="plans")
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
+
+    workouts = relationship("Workout", secondary=workout_plan_association_table)
