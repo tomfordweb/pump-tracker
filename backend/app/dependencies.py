@@ -8,7 +8,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from . import crud
+from . import crud, schemas
 from .database import SessionLocal, engine
 from .schemas import Token, TokenData, User, UserCreate, Workout
 
@@ -66,14 +66,41 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     return user
 
-async def get_workout_from_path(workout_id: int = Path('workout_id'), database: Session = Depends(get_db)):
-    return crud.get_workout(database, workout_id)
-
-
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+async def get_exercise_from_path(
+        exercise_id: int = Path('exercise_id'), 
+        database: Session = Depends(get_db)
+    ):
+    exercise = crud.get_exercise(database, exercise_id)
+    if exercise is None:
+        raise HTTPException(
+            status_code=404,
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return exercise
+
+async def get_current_user_exercise_from_path(exercise: schemas.Exercise = Depends(get_exercise_from_path), user: User = Depends(get_current_active_user)):
+    if user.id != exercise.owner_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Unauthorized",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return exercise
+
+
+async def get_workout_from_path(workout_id: int = Path('workout_id'), database: Session = Depends(get_db)):
+    workout = crud.get_workout(database, workout_id)
+    if workout is None:
+        raise HTTPException(
+            status_code=404,
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return workout
 
 async def get_current_user_workout_from_path(workout: Workout = Depends(get_workout_from_path), user: User = Depends(get_current_active_user)):
     if user.id != workout.owner_id:

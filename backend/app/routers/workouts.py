@@ -14,7 +14,7 @@ async def get_workout_list(current_user: schemas.User = Depends(get_current_acti
 
 @router.post("/workouts")
 async def create_workout(workout: schemas.WorkoutCreate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
-    workout = crud.create_user_workout(db, workout, current_user)
+    workout = crud.create_workout(db, workout, current_user)
     return workout
 
 @router.get("/workouts/{workout_id}")

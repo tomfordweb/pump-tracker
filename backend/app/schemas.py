@@ -104,10 +104,13 @@ class Plan(PlanBase):
 class ExerciseBase(BaseModel):
     name: str
 
+class ExerciseUpdate(BaseModel):
+    name: Optional[str]
+
 class ExerciseCreate(ExerciseBase):
     pass
 
-class Exerciase(ExerciseBase):
+class Exercise(ExerciseBase):
     id: int
 
     date_updated: datetime.date

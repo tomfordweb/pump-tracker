@@ -14,7 +14,9 @@ class User(Base):
     full_name = Column(String)
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
+
     workouts = relationship("Workout", back_populates="owner")
+    exercises = relationship("Exercise", back_populates="owner")
     workout_plans = relationship("Plan", back_populates="owner")
 
 
@@ -73,7 +75,12 @@ class Exercise(Base):
     """
     __tablename__ = "exercises"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
 
+    name = Column(String)
+    description = Column(String)
+    avatar_id = Column(Integer, index=True)
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
+
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="exercises")

@@ -14,6 +14,8 @@ def truncate_database():
     session = TestingSessionLocal()
     session.execute('''DELETE FROM users''')
     session.execute('''DELETE FROM workouts''')
+    session.execute('''DELETE FROM plans''')
+    session.execute('''DELETE FROM exercises''')
     session.commit()
     session.close()
 

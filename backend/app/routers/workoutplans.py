@@ -7,7 +7,7 @@ from ..dependencies import get_current_active_user, get_db
 router = APIRouter()
 @router.post("/workout-plan")
 async def create_workout(workout: schemas.PlanCreate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
-    workout = crud.create_user_workout(db, workout, current_user)
+    workout = crud.create_user_workout_plan(db, workout, current_user)
     return workout
 
 @router.get("/workout-plan/{plan_id}")

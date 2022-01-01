@@ -72,3 +72,13 @@ def test_create_user_rejects_duplicate_email(truncate_database, create_testing_a
     )
     assert response.status_code == 400
     assert "email" in response.text
+
+
+def test_you_can_get_a_list_of_user_workouts():
+    pass
+
+def test_you_can_get_a_list_of_user_plans():
+    pass
+
+def test_you_can_get_a_list_of_user_exercises():
+    pass
