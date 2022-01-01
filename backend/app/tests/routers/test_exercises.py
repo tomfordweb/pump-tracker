@@ -1,3 +1,5 @@
+import pytest
+
 from ..app import client
 from ..fixtures import (TESTING_ACCOUNT_DETAILS, create_access_token_for_user,
                         create_testing_account, get_token_headers,
@@ -5,6 +7,16 @@ from ..fixtures import (TESTING_ACCOUNT_DETAILS, create_access_token_for_user,
 
 EXERCISE_CREATE = {"name": "Squat", "description": "The best exercise known to man"}
 
+
+@pytest.fixture
+def create_basic_exercise(get_token_headers):
+    response = client.post(
+            "/exercises",
+            headers=get_token_headers,
+            json=EXERCISE_CREATE
+    )
+    assert response.status_code == 200
+    return response
 
 def test_that_an_unauthenticated_user_cannot_create_a_exercise(truncate_database):
     response = client.post(
@@ -16,14 +28,9 @@ def test_that_an_unauthenticated_user_cannot_create_a_exercise(truncate_database
     assert response.status_code == 401
 
 
-def test_you_can_create_a_exercise(truncate_database, get_token_headers):
-    response = client.post(
-            "/exercises",
-            headers=get_token_headers,
-            json=EXERCISE_CREATE
-    )
-    assert response.status_code == 200
-    json  = response.json()
+def test_you_can_create_a_exercise(truncate_database, create_basic_exercise):
+    assert create_basic_exercise.status_code == 200
+    json  = create_basic_exercise.json()
     assert json.get('id') is not None
     assert json.get('owner_id') is not None
     assert EXERCISE_CREATE.get('name') == json.get('name')

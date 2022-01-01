@@ -22,13 +22,6 @@ class WorkoutPlanWorkoutAssociate(BaseModel):
     workout_id:int
     pass
 
-class Workout(WorkoutBase):
-    id: int
-    owner_id: int
-
-    class Config:
-        orm_mode = True
-
 class UserBase(BaseModel):
     username: str
     email: str
@@ -38,15 +31,6 @@ class UserBase(BaseModel):
         validate_email(v)
         return v
 
-class User(UserBase):
-    """ A User that uses the application, authentication is based on this model """
-    id: int
-    username: str
-    full_name: Optional[str] = None
-    workouts: List[Workout] = []
-
-    class Config:
-        orm_mode = True
 
 class UserCreate(UserBase):
     """ The request used to create the user """
@@ -115,6 +99,25 @@ class Exercise(ExerciseBase):
 
     date_updated: datetime.date
     date_created: datetime.date
+
+    class Config:
+        orm_mode = True
+
+class Workout(WorkoutBase):
+    id: int
+    owner_id: int
+
+    exercises: List[Exercise]
+
+    class Config:
+        orm_mode = True
+
+class User(UserBase):
+    """ A User that uses the application, authentication is based on this model """
+    id: int
+    username: str
+    full_name: Optional[str] = None
+    workouts: List[Workout] = []
 
     class Config:
         orm_mode = True
