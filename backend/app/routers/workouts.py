@@ -18,7 +18,9 @@ async def create_workout(workout: schemas.WorkoutCreate, current_user: schemas.U
     return workout
 
 @router.get("/workouts/{workout_id}")
-async def get_workout_detail(workout: schemas.Workout = Depends(get_public_workout_from_path), current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+async def get_workout_detail(
+        workout: schemas.Workout = Depends(get_public_workout_from_path)
+    ):
     return workout
 
 @router.put("/workouts/{workout_id}")
@@ -33,13 +35,21 @@ async def update_workout_detail(
     return workouts
 
 @router.post("/workouts/{workout_id}/{exercise_id}")
-async def add_exercise_to_workout(workout_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+async def add_exercise_to_workout(
+        workout_id:int, 
+        current_user: schemas.User = Depends(get_current_active_user), 
+        db: Session = Depends(get_db)
+    ):
     workouts = crud.get_workouts(db)
     # TODO: ensure user owns the workout
     return workouts
 
 @router.delete("/workouts/{workout_id}/{exercise_id}")
-async def remove_exercise_from_workout(workout_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+async def remove_exercise_from_workout(
+        workout_id:int, 
+        current_user: schemas.User = Depends(get_current_active_user), 
+        db: Session = Depends(get_db)
+    ):
     workouts = crud.get_workouts(db)
     # TODO: ensure user owns the workout
     return workouts
