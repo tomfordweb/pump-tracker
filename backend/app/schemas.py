@@ -91,11 +91,27 @@ class PlanBase(BaseModel):
     owner_id: int
 
 class PlanCreate(PlanBase):
-    pass;
+    pass
 
 class Plan(PlanBase):
     id: int
     date_updated: datetime.date
     date_created: datetime.date
+    class Config:
+        orm_mode = True
+
+
+class ExerciseBase(BaseModel):
+    name: str
+
+class ExerciseCreate(ExerciseBase):
+    pass
+
+class Exerciase(ExerciseBase):
+    id: int
+
+    date_updated: datetime.date
+    date_created: datetime.date
+
     class Config:
         orm_mode = True
