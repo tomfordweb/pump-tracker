@@ -1,14 +1,25 @@
+import datetime
 from typing import List, Optional
 
 from email_validator import validate_email
 from pydantic import BaseModel, validator
 
 
+class WorkoutUpdate(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    is_public: Optional[bool]
+
 class WorkoutBase(BaseModel):
     name: str
     description: str
+    is_public: bool
 
 class WorkoutCreate(WorkoutBase):
+    pass
+
+class WorkoutPlanWorkoutAssociate(BaseModel):
+    workout_id:int
     pass
 
 class Workout(WorkoutBase):
@@ -72,3 +83,19 @@ class TokenData(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class PlanBase(BaseModel):
+    name: str
+    description: str
+    avatar_id: int
+    owner_id: int
+
+class PlanCreate(PlanBase):
+    pass;
+
+class Plan(PlanBase):
+    id: int
+    date_updated: datetime.date
+    date_created: datetime.date
+    class Config:
+        orm_mode = True
