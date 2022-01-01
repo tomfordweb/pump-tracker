@@ -29,6 +29,7 @@ class Workout(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     description = Column(String, index=True)
+    is_public = Column(Boolean)
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="workouts")
     date_created = Column(DateTime)

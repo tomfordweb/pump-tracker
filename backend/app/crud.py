@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from . import dependencies, models, schemas
@@ -7,7 +8,23 @@ def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
 def get_workout(db: Session, workout_id: int):
-    return db.query(models.User).filter(models.Workout.id == workout_id).first()
+    workout = db.query(models.Workout).filter(models.Workout.id == workout_id).first()
+
+    if workout is None:
+        raise HTTPException(
+            status_code="404",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+
+
+    return workout
+
+def update_workout(db: Session, workout_id:int, workout: schemas.WorkoutUpdate):
+    update_data = workout.dict(exclude_unset=True)
+    db.query(models.Workout).filter(models.Workout.id == workout_id).update(update_data)
+    db.commit()
+    return get_workout(db, workout_id)
+    
 
 def get_plan(db: Session, plan_id: int):
     return db.query(models.User).filter(models.Plan.id == plan_id).first()

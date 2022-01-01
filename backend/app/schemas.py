@@ -5,9 +5,15 @@ from email_validator import validate_email
 from pydantic import BaseModel, validator
 
 
+class WorkoutUpdate(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    is_public: Optional[bool]
+
 class WorkoutBase(BaseModel):
     name: str
     description: str
+    is_public: bool
 
 class WorkoutCreate(WorkoutBase):
     pass

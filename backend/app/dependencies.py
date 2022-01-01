@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Path, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -66,11 +66,36 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     return user
 
+async def get_workout_from_path(workout_id: int = Path('workout_id'), database: Session = Depends(get_db)):
+    return crud.get_workout(database, workout_id)
+
+
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
+async def get_current_user_workout_from_path(workout: Workout = Depends(get_workout_from_path), user: User = Depends(get_current_active_user)):
+    if user.id != workout.owner_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Unauthorized",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return workout
+
+async def get_public_workout_from_path(workout: Workout = Depends(get_workout_from_path), user: User = Depends(get_current_active_user)):
+    if user.id == workout.owner_id:
+        """ If the user owns the workout they can view the private workout """
+        return workout
+
+    if workout.is_public is False:
+        raise HTTPException(
+            status_code=403,
+            detail="Unauthorized",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return workout
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
