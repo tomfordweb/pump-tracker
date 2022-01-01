@@ -12,7 +12,7 @@ def get_workout(db: Session, workout_id: int):
 
     if workout is None:
         raise HTTPException(
-            status_code="404",
+            status_code=404,
             headers={"WWW-Authenticate": "Bearer"}
         )
 

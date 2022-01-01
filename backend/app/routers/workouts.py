@@ -27,7 +27,7 @@ async def update_workout_detail(
         stored_workout: schemas.Workout = Depends(get_current_user_workout_from_path), 
         current_user: schemas.User = Depends(get_current_active_user), 
         db: Session = Depends(get_db) 
-        ):
+    ):
     workouts = crud.update_workout(db, stored_workout.id, workout)
     # TODO: ensure user can edit workout
     return workouts
