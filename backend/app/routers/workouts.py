@@ -34,22 +34,23 @@ async def update_workout_detail(
     # TODO: ensure user can edit workout
     return workouts
 
-@router.post("/workouts/{workout_id}/{exercise_id}")
-async def add_exercise_to_workout(
-        workout_id:int, 
-        current_user: schemas.User = Depends(get_current_active_user), 
-        db: Session = Depends(get_db)
-    ):
-    workouts = crud.get_workouts(db)
-    # TODO: ensure user owns the workout
-    return workouts
+# Not ready yet
+# @router.post("/workouts/{workout_id}/{exercise_id}")
+# async def add_exercise_to_workout(
+#         workout_id:int, 
+#         current_user: schemas.User = Depends(get_current_active_user), 
+#         db: Session = Depends(get_db)
+#     ):
+#     workouts = crud.get_workouts(db)
+#     # TODO: ensure user owns the workout
+#     return workouts
 
-@router.delete("/workouts/{workout_id}/{exercise_id}")
-async def remove_exercise_from_workout(
-        workout_id:int, 
-        current_user: schemas.User = Depends(get_current_active_user), 
-        db: Session = Depends(get_db)
-    ):
-    workouts = crud.get_workouts(db)
-    # TODO: ensure user owns the workout
-    return workouts
+# @router.delete("/workouts/{workout_id}/{exercise_id}")
+# async def remove_exercise_from_workout(
+#         workout_id:int, 
+#         current_user: schemas.User = Depends(get_current_active_user), 
+#         db: Session = Depends(get_db)
+#     ):
+#     workouts = crud.get_workouts(db)
+#     # TODO: ensure user owns the workout
+#     return workouts
