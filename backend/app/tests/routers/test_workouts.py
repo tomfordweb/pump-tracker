@@ -1,3 +1,5 @@
+import pytest
+
 from ..app import client
 from ..fixtures import (TESTING_ACCOUNT_DETAILS, create_access_token_for_user,
                         create_testing_account, get_token_headers,
@@ -5,6 +7,15 @@ from ..fixtures import (TESTING_ACCOUNT_DETAILS, create_access_token_for_user,
 
 WORKOUT_CREATE = {"name": "My test workout", "is_public": False, "description": "Test Workout"}
 
+
+@pytest.fixture
+def create_basic_workout(get_token_headers):
+    response = client.post(
+            "/workouts",
+            headers=get_token_headers,
+            json=WORKOUT_CREATE
+    )
+    return response
 
 def test_that_an_unauthenticated_user_cannot_create_a_workout(truncate_database):
     response = client.post(
@@ -16,14 +27,9 @@ def test_that_an_unauthenticated_user_cannot_create_a_workout(truncate_database)
     assert response.status_code == 401
 
 
-def test_you_can_create_a_workout(truncate_database, get_token_headers):
-    response = client.post(
-            "/workouts",
-            headers=get_token_headers,
-            json=WORKOUT_CREATE
-    )
-    assert response.status_code == 200
-    json  = response.json()
+def test_you_can_create_a_workout(truncate_database, create_basic_workout):
+    assert create_basic_workout.status_code == 200
+    json  = create_basic_workout.json()
     assert json.get('id') is not None
     assert json.get('owner_id') is not None
     assert WORKOUT_CREATE.get('name') == json.get('name')
@@ -126,13 +132,6 @@ def test_a_private_workout_is_private_and_it_can_be_updated_to_a_public_workout_
     assert invalid_workout_update.status_code == 403
 
 
-# def test_you_can_add_any_public_exercise_to_a_workout_that_you_own(truncate_database, create_access_token_for_user):
-#     pass
-
-
-# def test_you_can_remove_exercise_from_workout_if_you_own_it(truncate_database, create_access_token_for_user):
-#     pass
-
 def test_that_when_a_workout_does_not_exist_that_a_404_is_thrown(truncate_database, get_token_headers):
     response = client.get(
             "/workouts/9001",
@@ -140,3 +139,10 @@ def test_that_when_a_workout_does_not_exist_that_a_404_is_thrown(truncate_databa
     )
     assert response.status_code == 404
 
+
+# def test_you_can_fork_a_workout():
+#     """
+#     An idea...
+#     The workout should be private
+#     The workout cannot be public
+#     """

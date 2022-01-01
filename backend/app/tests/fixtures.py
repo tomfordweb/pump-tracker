@@ -14,6 +14,8 @@ def truncate_database():
     session = TestingSessionLocal()
     session.execute('''DELETE FROM users''')
     session.execute('''DELETE FROM workouts''')
+    session.execute('''DELETE FROM plans''')
+    session.execute('''DELETE FROM exercises''')
     session.commit()
     session.close()
 
@@ -43,4 +45,5 @@ def create_access_token_for_user(create_testing_account):
 @pytest.fixture
 def get_token_headers(create_access_token_for_user):
     token = create_access_token_for_user.json().get('access_token')
+    assert token is not None
     return {"Authorization": f"Bearer {token}"}
