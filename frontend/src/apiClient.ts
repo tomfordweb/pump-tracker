@@ -1,18 +1,34 @@
-// const Client = {
-//   get : (url: string) => { return url; },
-//   post : async (url: string, payload: {[key: string]: any}) =>
-//       await fetch(url, };
+export class AppHttpError extends Error {
+  code: number;
+  data: any;
 
-export async function postJsonToApi<Type>(
+  constructor(message: string, code: number, data: any) {
+    super(message);
+    this.code = code;
+    this.data = data;
+    Object.setPrototypeOf(this, AppHttpError.prototype);
+  }
+}
+
+function handleErrors(response: Response) {
+  if (!response.ok) {
+    return response.json().then((json) => {
+      throw new AppHttpError(response.statusText, response.status, json.detail);
+    });
+  }
+  return response;
+}
+
+export async function postJsonToApi(
   url: string,
   payload: { [key: string]: any }
-): Promise<Type> {
-  return fetch(url, {
+): Promise<Response> {
+  return fetch(`/api/v1${url}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify(payload),
-  }).then((data) => data.json());
+  }).then(handleErrors);
 }

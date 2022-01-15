@@ -39,13 +39,13 @@ async def create_user(user: UserCreate, db:Session = Depends(get_db)):
     if crud.get_user_by_email(db, user.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The email is already taken",
+            detail={ "message": "Failed Validation", "field_errors": { "email": "This email address is already taken" } },
         )
 
     if crud.get_user_by_username(db, user.username):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The username is already taken",
+            detail={ "message": "Failed Validation", "field_errors": { "username": "This username is already taken" } },
         )
 
     result = crud.create_user(db, user)

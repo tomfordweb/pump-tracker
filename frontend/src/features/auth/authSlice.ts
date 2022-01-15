@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { postJsonToApi } from "../../apiClient";
+import { AppHttpError, postJsonToApi } from "../../apiClient";
 
 export interface UserCreate {
   username: string;
@@ -15,10 +15,12 @@ interface ValidationErrors {
 }
 
 interface AuthState {
+  error: ValidationErrors | null | undefined;
   token: string | null;
+  user: UserState | null;
 }
 
-interface CreateUserResponse {
+interface UserState {
   username: string;
   email: string;
   id: number;
@@ -26,7 +28,9 @@ interface CreateUserResponse {
 }
 
 const initialState: AuthState = {
+  error: null,
   token: null,
+  user: null,
 };
 export const authSlice = createSlice({
   name: "auth",
@@ -35,6 +39,15 @@ export const authSlice = createSlice({
     updateToken: (state, action) => {
       state.token = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(createAccount.fulfilled, (state, { payload }) => {
+      state.user = payload;
+    });
+
+    builder.addCase(createAccount.rejected, (state, action) => {
+      state.error = action.payload;
+    });
   },
 });
 
@@ -47,26 +60,18 @@ export const { updateToken } = authSlice.actions;
 // });
 
 export const createAccount = createAsyncThunk<
-  CreateUserResponse,
-  { id: string } & Partial<UserCreate>,
+  UserState,
+  UserCreate,
   { rejectValue: ValidationErrors }
 >("users/update", async (userData, { rejectWithValue }) => {
   try {
-    const { id, ...fields } = userData;
-    const response = await postJsonToApi<CreateUserResponse>("/users", fields);
+    const response = await postJsonToApi("/users", userData).then((data) =>
+      data.json()
+    );
     return response;
   } catch (err) {
-    console.error(err);
-    // // let error: AxiosError<ValidationErrors> = err; // cast the error
-    // for access if (!error.response) {
-    //   throw err;
-    // }
-    // We got validation errors, let's return those so we can reference in
-    // our component and set form errors
-    return rejectWithValue({
-      errorMessage: "foo",
-      field_errors: { foo: "bar" },
-    });
+    let error = err as AppHttpError;
+    return rejectWithValue(error.data);
   }
 });
 
