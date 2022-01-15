@@ -42,7 +42,7 @@ def test_create_user_rejects_emails_that_are_not_emails(truncate_database):
         json={**TESTING_ACCOUNT_DETAILS, **{"email": "asdf"}},
     )
     assert response.status_code == 422
-    assert "value_error.emailsyntax" in response.text
+    assert response.json().get('detail').get('field_errors').get('email') is not None
 
 
 def test_you_can_get_a_token(truncate_database, create_access_token_for_user):
