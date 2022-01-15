@@ -1,13 +1,4 @@
-import React from "react";
-import {
-  Formik,
-  FormikHelpers,
-  FormikProps,
-  Form,
-  Field,
-  FieldProps,
-  ErrorMessage,
-} from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useAppDispatch } from "../../hooks";
 import {
   createAccount,
@@ -22,10 +13,10 @@ const CreateAccountPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const initialValues: UserCreate = {
-    username: "test",
-    email: "test@test.com",
-    password1: "test",
-    password2: "test",
+    username: "",
+    email: "",
+    password1: "",
+    password2: "",
   };
 
   const createNewAccount = async (data: UserCreate) => {
@@ -55,17 +46,21 @@ const CreateAccountPage = () => {
             });
         }}
       >
-        <Form>
+        <Form id="CreateAccountPage">
+          <label htmlFor="username">Username</label>
           <Field id="username" name="username" placeholder="Username" />
           <ErrorMessage name="username" />
+          <label htmlFor="email">Email</label>
           <Field id="email" name="email" type="email" placeholder="Email" />
           <ErrorMessage name="email" />
+          <label htmlFor="password1">Password</label>
           <Field
             id="password1"
             name="password1"
             type="password"
             placeholder="Password"
           />
+          <label htmlFor="password2">Password Confirmation</label>
           <Field
             id="password2"
             name="password2"

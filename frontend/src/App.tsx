@@ -3,25 +3,14 @@ import { Outlet, Link } from "react-router-dom";
 
 import WorkoutsPage from "./components/WorkoutsPage/WorkoutsPage";
 
-import {
-  BrowserRouter,
-  useLocation,
-  Navigate,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { useLocation, Navigate, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/LoginPage/LoginPage";
 import HomePage from "./components/HomePage/HomePage";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import CreateAccountPage from "./components/CreateAccountPage/CreateAccountPage";
 import DashboardPage from "./components/DashboardPage/DashboardPage";
-import {
-  authHealthcheck,
-  logout,
-  selectToken,
-} from "./features/auth/authSlice";
+import { authHealthcheck, logout } from "./features/auth/authSlice";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 
 function PageLayout() {
   const dispatch = useAppDispatch();
@@ -69,7 +58,7 @@ function App() {
       dispatch(authHealthcheck(token));
     }, 60000);
     return () => clearInterval(healthcheck);
-  }, [token]);
+  }, [dispatch, token]);
   return (
     <Routes>
       <Route element={<PageLayout />}>
