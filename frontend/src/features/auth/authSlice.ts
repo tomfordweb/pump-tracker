@@ -54,7 +54,6 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      console.log("loggin tout");
       state.token = null;
       state.user = null;
     },
