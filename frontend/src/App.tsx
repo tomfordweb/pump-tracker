@@ -13,13 +13,23 @@ import {
 import LoginPage from "./components/LoginPage/LoginPage";
 import HomePage from "./components/HomePage/HomePage";
 import { useAppSelector } from "./hooks";
+import CreateAccountPage from "./components/CreateAccountPage/CreateAccountPage";
 
 function PageLayout() {
   return (
     <div>
-      <h1>Pump Tracker</h1>
+      <h1>
+        <Link to="/">Pump Tracker</Link>
+      </h1>
       <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem" }}>
-        <Link to="/workouts">Workouts</Link>
+        <ul>
+          <li>
+            <Link to="/">Dashboard</Link>
+          </li>
+          <li>
+            <Link to="/workouts">Workouts</Link>
+          </li>
+        </ul>
       </nav>
       <Outlet />
     </div>
@@ -64,6 +74,7 @@ function App() {
       <Route element={<PageLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/create-account" element={<CreateAccountPage />} />
         <Route
           path="workouts"
           element={
