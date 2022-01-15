@@ -9,10 +9,18 @@ import {
   ErrorMessage,
 } from "formik";
 import { useAppDispatch } from "../../hooks";
-import { createAccount, UserCreate } from "../../features/auth/authSlice";
+import {
+  createAccount,
+  loginToAccount,
+  TokenCreate,
+  UserCreate,
+} from "../../features/auth/authSlice";
+
+import { useNavigate } from "react-router-dom";
 
 const CreateAccountPage = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const initialValues: UserCreate = {
     username: "test",
     email: "test@test.com",
@@ -20,17 +28,31 @@ const CreateAccountPage = () => {
     password2: "test",
   };
 
-  const create = async (data: UserCreate) => {
+  const createNewAccount = async (data: UserCreate) => {
     await dispatch(createAccount(data)).unwrap();
   };
+
+  const loginWithNewAccount = async (data: TokenCreate) => {
+    await dispatch(loginToAccount(data))
+      .unwrap()
+      .then((data) => console.log(data));
+  };
+
   return (
     <div>
       <Formik
         initialValues={initialValues}
         onSubmit={(values, actions) => {
-          create(values).catch((error) =>
-            actions.setErrors(error.field_errors)
-          );
+          createNewAccount(values)
+            .catch((error) => actions.setErrors(error.field_errors))
+            .then(() => {
+              loginWithNewAccount({
+                username: values.username,
+                password: values.password1,
+              }).then(() => {
+                navigate("/dashboard");
+              });
+            });
           // alert(JSON.stringify(values, null, 2));
           // actions.setSubmitting(false);
         }}

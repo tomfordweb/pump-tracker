@@ -7,7 +7,9 @@ import {
   Field,
   FieldProps,
 } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginToAccount, TokenCreate } from "../../features/auth/authSlice";
+import { useAppDispatch } from "../../hooks";
 
 interface LoginFormValues {
   username: string;
@@ -15,14 +17,19 @@ interface LoginFormValues {
 }
 const LoginPage = () => {
   const initialValues: LoginFormValues = { username: "", password: "" };
+  const dispatch = useAppDispatch();
+  let navigate = useNavigate();
+
+  const dipatchLogin = async (data: TokenCreate) => {
+    await dispatch(loginToAccount(data)).unwrap();
+  };
+
   return (
     <div>
       <Formik
         initialValues={initialValues}
         onSubmit={(values, actions) => {
-          console.log({ values, actions });
-          alert(JSON.stringify(values, null, 2));
-          actions.setSubmitting(false);
+          dipatchLogin(values).then(() => navigate("/dashboard"));
         }}
       >
         <Form>

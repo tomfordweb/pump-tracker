@@ -19,6 +19,19 @@ function handleErrors(response: Response) {
   return response;
 }
 
+export async function postFormDataToApi(
+  url: string,
+  payload: { [key: string]: any }
+): Promise<Response> {
+  return fetch(`/api/v1${url}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams(payload),
+  }).then(handleErrors);
+}
+
 export async function postJsonToApi(
   url: string,
   payload: { [key: string]: any }
@@ -27,7 +40,6 @@ export async function postJsonToApi(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify(payload),
   }).then(handleErrors);

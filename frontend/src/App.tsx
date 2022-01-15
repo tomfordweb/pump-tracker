@@ -14,6 +14,7 @@ import LoginPage from "./components/LoginPage/LoginPage";
 import HomePage from "./components/HomePage/HomePage";
 import { useAppSelector } from "./hooks";
 import CreateAccountPage from "./components/CreateAccountPage/CreateAccountPage";
+import DashboardPage from "./components/DashboardPage/DashboardPage";
 
 function PageLayout() {
   return (
@@ -24,7 +25,7 @@ function PageLayout() {
       <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem" }}>
         <ul>
           <li>
-            <Link to="/">Dashboard</Link>
+            <Link to="/dashboard">Dashboard</Link>
           </li>
           <li>
             <Link to="/workouts">Workouts</Link>
@@ -75,6 +76,14 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/create-account" element={<CreateAccountPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <RequireAuth>
+              <DashboardPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="workouts"
           element={

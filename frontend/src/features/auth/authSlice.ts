@@ -1,6 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { AppHttpError, postJsonToApi } from "../../apiClient";
+import {
+  AppHttpError,
+  postFormDataToApi,
+  postJsonToApi,
+} from "../../apiClient";
+
+export interface TokenCreate {
+  username: string;
+  password: string;
+  grant_type?: string;
+  scope?: string;
+  client_id?: string;
+  client_secret?: string;
+}
 
 export interface UserCreate {
   username: string;
@@ -36,8 +49,9 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    updateToken: (state, action) => {
-      state.token = action.payload;
+    logout: (state, action) => {
+      state.token = null;
+      state.user = null;
     },
   },
   extraReducers: (builder) => {
@@ -48,16 +62,18 @@ export const authSlice = createSlice({
     builder.addCase(createAccount.rejected, (state, action) => {
       state.error = action.payload;
     });
+
+    builder.addCase(loginToAccount.fulfilled, (state, { payload }) => {
+      state.token = payload.access_token;
+    });
+
+    builder.addCase(loginToAccount.rejected, (state, action) => {
+      state.error = action.payload;
+    });
   },
 });
 
-export const { updateToken } = authSlice.actions;
-
-// export const createAccount = createAsyncThunk<{UserCreate, { id: string } &
-// Partial<UserCreate>, { rejectValue: ValidationErrors } }, >("account/create",
-// async (payload: any) => {
-//   return Client.post("/api/v1/users", payload);
-// });
+export const { logout } = authSlice.actions;
 
 export const createAccount = createAsyncThunk<
   UserState,
@@ -69,6 +85,21 @@ export const createAccount = createAsyncThunk<
       data.json()
     );
     return response;
+  } catch (err) {
+    let error = err as AppHttpError;
+    return rejectWithValue(error.data);
+  }
+});
+
+export const loginToAccount = createAsyncThunk<
+  { access_token: string; token_type: string },
+  TokenCreate,
+  { rejectValue: ValidationErrors }
+>("users/authenticate", async (credentials, { rejectWithValue }) => {
+  try {
+    return await postFormDataToApi("/token", credentials).then((data) =>
+      data.json()
+    );
   } catch (err) {
     let error = err as AppHttpError;
     return rejectWithValue(error.data);
