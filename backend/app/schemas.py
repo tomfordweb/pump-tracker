@@ -1,7 +1,8 @@
 import datetime
 from typing import List, Optional
 
-from email_validator import validate_email
+from email_validator import EmailNotValidError, validate_email
+from fastapi import HTTPException, status
 from pydantic import BaseModel, validator
 
 
@@ -28,8 +29,14 @@ class UserBase(BaseModel):
 
     @validator('email')
     def email_is_a_valid_address(cls, v):
-        validate_email(v)
-        return v
+        try:
+            validate_email(v)
+            return v
+        except EmailNotValidError as err:
+            raise HTTPException(
+                status_code=422,
+                detail={ "message": "Failed Validation", "field_errors": { "email": str(err) } },
+            )
 
 
 class UserCreate(UserBase):
