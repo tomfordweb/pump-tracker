@@ -3,16 +3,16 @@ import { useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 function App() {
-  useEffect(() => {
-    fetch("/api/v1", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => console.log(response));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/v1", {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Accept: "application/json",
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((response) => console.log(response));
+  // }, []);
   return (
     <div>
       <h1>Pump Tracker</h1>

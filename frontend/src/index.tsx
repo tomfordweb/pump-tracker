@@ -5,23 +5,27 @@ import reportWebVitals from "./reportWebVitals";
 import WorkoutsPage from "./components/WorkoutsPage/WorkoutsPage";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./store";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route path="workouts" element={<WorkoutsPage />} />
-          <Route
-            path="*"
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>There's nothing here!</p>
-              </main>
-            }
-          />
-        </Route>
-      </Routes>
+      <Provider store={store}>
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route path="workouts" element={<WorkoutsPage />} />
+            <Route
+              path="*"
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>There's nothing here!</p>
+                </main>
+              }
+            />
+          </Route>
+        </Routes>
+      </Provider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
