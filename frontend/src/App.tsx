@@ -12,11 +12,19 @@ import {
 } from "react-router-dom";
 import LoginPage from "./components/LoginPage/LoginPage";
 import HomePage from "./components/HomePage/HomePage";
-import { useAppSelector } from "./hooks";
+import { useAppDispatch, useAppSelector } from "./hooks";
 import CreateAccountPage from "./components/CreateAccountPage/CreateAccountPage";
 import DashboardPage from "./components/DashboardPage/DashboardPage";
+import {
+  authHealthcheck,
+  logout,
+  selectToken,
+} from "./features/auth/authSlice";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 function PageLayout() {
+  const dispatch = useAppDispatch();
   return (
     <div>
       <h1>
@@ -30,6 +38,7 @@ function PageLayout() {
           <li>
             <Link to="/workouts">Workouts</Link>
           </li>
+          <li onClick={() => dispatch(logout())}>Logout</li>
         </ul>
       </nav>
       <Outlet />
@@ -53,23 +62,14 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 }
 
 function App() {
-  // useEffect(() => {
-  //   fetch("/api/v1", {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Accept: "application/json",
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((response) => console.log(response));
-  // }, []);
-  // <div>
-  //   <h1>Pump Tracker</h1>
-  //   <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem" }}>
-  //     <Link to="/workouts">Workouts</Link>
-  //   </nav>
-  //   <Outlet />
-  // </div>
+  const token = useAppSelector((state) => state.auth.token);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    const healthcheck = setInterval(() => {
+      dispatch(authHealthcheck(token));
+    }, 60000);
+    return () => clearInterval(healthcheck);
+  }, [token]);
   return (
     <Routes>
       <Route element={<PageLayout />}>

@@ -1,10 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 
 import {
   AppHttpError,
+  generateJwtHeaders,
+  getFromApi,
   postFormDataToApi,
   postJsonToApi,
 } from "../../apiClient";
+import { RootState } from "../../store";
 
 export interface TokenCreate {
   username: string;
@@ -49,7 +53,8 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state, action) => {
+    logout: (state) => {
+      console.log("loggin tout");
       state.token = null;
       state.user = null;
     },
@@ -61,6 +66,15 @@ export const authSlice = createSlice({
 
     builder.addCase(createAccount.rejected, (state, action) => {
       state.error = action.payload;
+    });
+
+    builder.addCase(authHealthcheck.fulfilled, (state, { payload }) => {
+      state.user = payload;
+    });
+
+    builder.addCase(authHealthcheck.rejected, (state, action) => {
+      state.user = null;
+      state.token = null;
     });
 
     builder.addCase(loginToAccount.fulfilled, (state, { payload }) => {
@@ -91,6 +105,23 @@ export const createAccount = createAsyncThunk<
   }
 });
 
+export const authHealthcheck = createAsyncThunk<
+  UserState,
+  string | null,
+  { rejectValue: boolean }
+>("users/healthcheck", async (token, { rejectWithValue }) => {
+  try {
+    if (!token) {
+      return rejectWithValue(false);
+    }
+    return await getFromApi("/users/me", generateJwtHeaders(token)).then(
+      (data) => data.json()
+    );
+  } catch (err) {
+    return rejectWithValue(false);
+  }
+});
+
 export const loginToAccount = createAsyncThunk<
   { access_token: string; token_type: string },
   TokenCreate,
@@ -105,5 +136,7 @@ export const loginToAccount = createAsyncThunk<
     return rejectWithValue(error.data);
   }
 });
+
+export const selectToken = (state: RootState) => state.auth.token;
 
 export default authSlice.reducer;

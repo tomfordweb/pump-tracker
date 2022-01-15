@@ -19,13 +19,37 @@ function handleErrors(response: Response) {
   return response;
 }
 
+export function generateJwtHeaders(token: string | null) {
+  if (!token) {
+    throw new Error("Empty token provided");
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+export async function getFromApi(
+  url: string,
+  headers: Record<string, string> = {}
+) {
+  return fetch(`/api/v1${url}`, {
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+  }).then(handleErrors);
+}
+
 export async function postFormDataToApi(
   url: string,
-  payload: { [key: string]: any }
+  payload: Record<string, any>,
+  headers: Record<string, string> = {}
 ): Promise<Response> {
   return fetch(`/api/v1${url}`, {
     method: "POST",
     headers: {
+      ...headers,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams(payload),
@@ -34,11 +58,13 @@ export async function postFormDataToApi(
 
 export async function postJsonToApi(
   url: string,
-  payload: { [key: string]: any }
+  payload: Record<string, any>,
+  headers: Record<string, string> = {}
 ): Promise<Response> {
   return fetch(`/api/v1${url}`, {
     method: "POST",
     headers: {
+      ...headers,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
