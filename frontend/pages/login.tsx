@@ -19,12 +19,13 @@ const Login: NextPage = () => {
       <Formik
         initialValues={initialValues}
         onSubmit={(values, actions) => {
-          dipatchLogin(values).then(() => router.push("/dashboard"));
+          dipatchLogin(values);
         }}
       >
         <Form>
-          <label htmlFor="firstName">First Name</label>
+          <label htmlFor="username">Username</label>
           <Field id="username" name="username" placeholder="Username" />
+          <label htmlFor="password">Password</label>
           <Field
             id="password"
             name="password"
