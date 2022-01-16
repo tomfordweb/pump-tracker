@@ -7,13 +7,12 @@ WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:$PATH
 
-RUN npm install serve react-scripts -g
 COPY ./package* ./ 
 RUN npm install
 
 COPY ./ ./
 
-RUN npm run build
+# RUN npm run build
 
 
 

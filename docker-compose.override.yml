@@ -10,7 +10,7 @@ services:
       - ./frontend/public:/app/public
       - ./frontend/src:/app/src
       - ./frontend/package-lock.json:/app/package-lock.json
-    command: ["npm", "start"]
+    command: ["npm", "run", "dev"]
     ports:
       - 3000:3000
       - 35729:35729
