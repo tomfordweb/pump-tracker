@@ -6,7 +6,8 @@ import {
   getFromApi,
   postFormDataToApi,
   postJsonToApi,
-} from "../../apiClient";
+} from "../../client";
+
 import { RootState } from "../../store";
 
 export interface TokenCreate {
