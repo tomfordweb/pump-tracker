@@ -33,7 +33,7 @@ export async function getFromApi(
   url: string,
   headers: Record<string, string> = {}
 ) {
-  return fetch(`http://localhost/api/v1${url}`, {
+  return fetch(`http://localhost:8000${url}`, {
     headers: {
       ...headers,
       "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export async function postFormDataToApi(
   payload: Record<string, any>,
   headers: Record<string, string> = {}
 ): Promise<Response> {
-  return fetch(`http://localhost/api/v1${url}`, {
+  return fetch(`http://localhost:8000${url}`, {
     method: "POST",
     headers: {
       ...headers,
@@ -61,7 +61,7 @@ export async function postJsonToApi(
   payload: Record<string, any>,
   headers: Record<string, string> = {}
 ): Promise<Response> {
-  return fetch(`http://localhost/api/v1${url}`, {
+  return fetch(`http://localhost:8000${url}`, {
     method: "POST",
     headers: {
       ...headers,
