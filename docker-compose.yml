@@ -3,16 +3,11 @@ version: "3"
 services:
   frontend:
     command: ["npm", "start"]
-    # networks:
-    #   - app-network
     ports:
       - 3000:3000
 
   backend:
     container_name: backend
-    # networks:
-    #   - app-network
-    #   - priv-network
     entrypoint:
       [
         "uvicorn",
@@ -24,15 +19,3 @@ services:
       ]
     ports:
       - 8000:8000
-
-  # proxy:
-  #   image: nginx:stable-alpine
-  #   networks:
-  #     - app-network
-  #   ports:
-  #     - 80:80
-# networks:
-#   app-network:
-#     driver: bridge
-#   priv-network:
-#     driver: bridge

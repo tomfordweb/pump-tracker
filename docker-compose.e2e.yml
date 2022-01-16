@@ -12,7 +12,7 @@ services:
       - ./frontend/public:/app/public
       - ./frontend/src:/app/src
       - ./frontend/package-lock.json:/app/package-lock.json
-    command: ["serve", "build"]
+    command: ["npm", "run", "start"]
     ports:
       - 3000:3000
       - 35729:35729
@@ -22,48 +22,35 @@ services:
       context: ./backend
     container_name: proxy
     environment:
-      MONGODB_URI: "mongodb://root:example@mongo:27017/"
       # DO NOT USE THIS IN ANYWHERE OTHER THAN A TESTING OR DEVELOPMENT ENVIRONMENT
       SECRET_KEY: "7880a54f2e77f3d7cac9c6d5387e0821b2a4b8a1c6429adaa1d534ad6f6a7120"
     volumes:
       - ./backend:/pumps
     restart: unless-stopped
 
-  proxy:
-    image: nginx:stable-alpine
-    networks:
-      - app-network
+  e2e:
+    image: cypress
+    build: ./e2e
+    container_name: cypress
+    depends_on:
+      - frontend
+      - backend
+    # note: inside e2e container, the network allows accessing
+    # "web" host under name "web"
+    # so "curl http://web" would return whatever the webserver
+    # in the "web" container is cooking
+    # see https://docs.docker.com/compose/networking/
+    environment:
+      - CYPRESS_baseUrl=http://frontend:3000
+    command: npx cypress run
+    # mount the host directory e2e/cypress and the file e2e/cypress.json as
+    # volumes within the container
+    # this means that:
+    #  1. anything that Cypress writes to these folders (e.g., screenshots,
+    #     videos) appears also on the Docker host's filesystem
+    #  2. any change that the developer applies to Cypress files on the host
+    #     machine immediately takes effect within the e2e container (no docker
+    #     rebuild required).
     volumes:
-      - ./proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
-    ports:
-      - 80:80
-
-  # e2e:
-  #   image: cypress
-  #   build: ./e2e
-  #   networks:
-  #     - app-network
-  #   container_name: cypress
-  #   depends_on:
-  #     - frontend
-  #     - proxy
-  #     - backend
-  #   # note: inside e2e container, the network allows accessing
-  #   # "web" host under name "web"
-  #   # so "curl http://web" would return whatever the webserver
-  #   # in the "web" container is cooking
-  #   # see https://docs.docker.com/compose/networking/
-  #   environment:
-  #     - CYPRESS_baseUrl=http://proxy
-  #   command: npx cypress run
-  #   # mount the host directory e2e/cypress and the file e2e/cypress.json as
-  #   # volumes within the container
-  #   # this means that:
-  #   #  1. anything that Cypress writes to these folders (e.g., screenshots,
-  #   #     videos) appears also on the Docker host's filesystem
-  #   #  2. any change that the developer applies to Cypress files on the host
-  #   #     machine immediately takes effect within the e2e container (no docker
-  #   #     rebuild required).
-  #   volumes:
-  #     - ./e2e/cypress:/app/cypress
-  #     - ./e2e/cypress.json:/app/cypress.json
+      - ./e2e/cypress:/app/cypress
+      - ./e2e/cypress.json:/app/cypress.json
