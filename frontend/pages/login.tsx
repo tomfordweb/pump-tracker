@@ -3,8 +3,12 @@ import { Formik, Form, Field } from "formik";
 import Link from "next/link";
 import { useAppDispatch } from "../hooks";
 import { useRouter } from "next/router";
-import { loginToAccount } from "../features/auth/authSlice";
+import { TokenCreate, loginToAccount } from "../features/auth/authSlice";
 
+interface LoginFormValues {
+  username: string;
+  password: string;
+}
 const Login: NextPage = () => {
   const initialValues: LoginFormValues = { username: "", password: "" };
   const dispatch = useAppDispatch();

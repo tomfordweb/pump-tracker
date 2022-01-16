@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { useCookies } from "react-cookie";
 
 import {
   AppHttpError,
@@ -49,6 +50,7 @@ const initialState: AuthState = {
   token: null,
   user: null,
 };
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -68,7 +70,10 @@ export const authSlice = createSlice({
     });
 
     builder.addCase(authHealthcheck.fulfilled, (state, { payload }) => {
-      state.user = payload;
+      console.log(payload);
+      const { token, ...everythingElse } = payload;
+      state.user = everythingElse;
+      state.token = token;
     });
 
     builder.addCase(authHealthcheck.rejected, (state, action) => {
@@ -105,7 +110,7 @@ export const createAccount = createAsyncThunk<
 });
 
 export const authHealthcheck = createAsyncThunk<
-  UserState,
+  UserState & { token: string },
   string | null,
   { rejectValue: boolean }
 >("users/healthcheck", async (token, { rejectWithValue }) => {
@@ -113,9 +118,9 @@ export const authHealthcheck = createAsyncThunk<
     if (!token) {
       return rejectWithValue(false);
     }
-    return await getFromApi("/users/me", generateJwtHeaders(token)).then(
-      (data) => data.json()
-    );
+    return await getFromApi("/users/me", generateJwtHeaders(token))
+      .then((data) => data.json())
+      .then((data) => ({ ...data, token }));
   } catch (err) {
     return rejectWithValue(false);
   }
