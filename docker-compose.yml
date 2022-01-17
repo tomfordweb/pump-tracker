@@ -8,14 +8,10 @@ services:
 
   backend:
     container_name: backend
-    entrypoint:
-      [
-        "uvicorn",
-        "app.main:app",
-        "--proxy-headers",
-        "--reload",
-        "--host",
-        "0.0.0.0",
-      ]
+    entrypoint: ["./start"]
     ports:
       - 8000:8000
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: pumps

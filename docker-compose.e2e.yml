@@ -7,10 +7,6 @@ services:
       args:
         env: production
         api_url: http://backend:8000
-    volumes:
-      - ./frontend/public:/app/public
-      - ./frontend/src:/app/src
-      - ./frontend/package-lock.json:/app/package-lock.json
     command: ["npm", "run", "start"]
     ports:
       - 3000:3000
@@ -20,12 +16,12 @@ services:
     build:
       context: ./backend
     container_name: backend
+    depends_on:
+      - db
     environment:
       # DO NOT USE THIS IN ANYWHERE OTHER THAN A TESTING OR DEVELOPMENT ENVIRONMENT
       SECRET_KEY: "7880a54f2e77f3d7cac9c6d5387e0821b2a4b8a1c6429adaa1d534ad6f6a7120"
-    volumes:
-      - ./backend:/pumps
-    restart: unless-stopped
+    entrypoint: ["./start", "smoke"]
 
   e2e:
     image: cypress
@@ -41,7 +37,7 @@ services:
     # see https://docs.docker.com/compose/networking/
     environment:
       - CYPRESS_baseUrl=http://frontend:3000
-    command: npx cypress run
+    command: npx cypress run --config "video=false" --config "screenshotOnRunRailure=false"
     # mount the host directory e2e/cypress and the file e2e/cypress.json as
     # volumes within the container
     # this means that:
@@ -53,3 +49,9 @@ services:
     volumes:
       - ./e2e/cypress:/app/cypress
       - ./e2e/cypress.json:/app/cypress.json
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: pumps
+      POSTGRES_PASSWORD: secret

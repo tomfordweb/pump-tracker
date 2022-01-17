@@ -5,8 +5,6 @@ from . import models, routers
 from .database import engine
 from .routers import exercises, users, workoutplans, workouts
 
-# models.Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 
 origins = [
