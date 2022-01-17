@@ -36,9 +36,11 @@ const CreateAccount: NextPage = () => {
               loginWithNewAccount({
                 username: values.username,
                 password: values.password1,
-              }).then(() => {
-                router.push("/dashboard");
-              });
+              })
+                .then(() => {
+                  router.push("/dashboard");
+                })
+                .catch((error) => console.error(error));
             });
         }}
       >

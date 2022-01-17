@@ -19,6 +19,10 @@ describe("/create-account page", () => {
     cy.getFormControlByLabel("Password").type(password);
     cy.getFormControlByLabel("Password Confirmation").type(password);
     cy.get("#CreateAccountPage").submit();
+    cy.intercept("/token").as("tokenCreate");
+    cy.wait(["@tokenCreate"]).then((subject) => {
+      console.log("subject", subject);
+    });
     cy.url().should("contain", "dashboard");
   });
 });

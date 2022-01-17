@@ -11,7 +11,10 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
+    "http://cypress",
+    "http://frontend",
     "http://localhost:3000",
+    "http://frontend:3000",
 ]
 
 app.add_middleware(

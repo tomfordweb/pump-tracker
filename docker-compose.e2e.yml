@@ -6,8 +6,7 @@ services:
       context: ./frontend
       args:
         env: production
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+        api_url: http://backend:8000
     volumes:
       - ./frontend/public:/app/public
       - ./frontend/src:/app/src
@@ -28,29 +27,29 @@ services:
       - ./backend:/pumps
     restart: unless-stopped
 
-  # e2e:
-  #   image: cypress
-  #   build: ./e2e
-  #   container_name: cypress
-  #   depends_on:
-  #     - frontend
-  #     - backend
-  #   # note: inside e2e container, the network allows accessing
-  #   # "web" host under name "web"
-  #   # so "curl http://web" would return whatever the webserver
-  #   # in the "web" container is cooking
-  #   # see https://docs.docker.com/compose/networking/
-  #   environment:
-  #     - CYPRESS_baseUrl=http://frontend:3000
-  #   command: npx cypress run
-  #   # mount the host directory e2e/cypress and the file e2e/cypress.json as
-  #   # volumes within the container
-  #   # this means that:
-  #   #  1. anything that Cypress writes to these folders (e.g., screenshots,
-  #   #     videos) appears also on the Docker host's filesystem
-  #   #  2. any change that the developer applies to Cypress files on the host
-  #   #     machine immediately takes effect within the e2e container (no docker
-  #   #     rebuild required).
-  #   volumes:
-  #     - ./e2e/cypress:/app/cypress
-  #     - ./e2e/cypress.json:/app/cypress.json
+  e2e:
+    image: cypress
+    build: ./e2e
+    container_name: cypress
+    depends_on:
+      - frontend
+      - backend
+    # note: inside e2e container, the network allows accessing
+    # "web" host under name "web"
+    # so "curl http://web" would return whatever the webserver
+    # in the "web" container is cooking
+    # see https://docs.docker.com/compose/networking/
+    environment:
+      - CYPRESS_baseUrl=http://frontend:3000
+    command: npx cypress run
+    # mount the host directory e2e/cypress and the file e2e/cypress.json as
+    # volumes within the container
+    # this means that:
+    #  1. anything that Cypress writes to these folders (e.g., screenshots,
+    #     videos) appears also on the Docker host's filesystem
+    #  2. any change that the developer applies to Cypress files on the host
+    #     machine immediately takes effect within the e2e container (no docker
+    #     rebuild required).
+    volumes:
+      - ./e2e/cypress:/app/cypress
+      - ./e2e/cypress.json:/app/cypress.json

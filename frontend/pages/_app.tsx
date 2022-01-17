@@ -8,6 +8,7 @@ import { authHealthcheck } from "../features/auth/authSlice";
 import { useEffect } from "react";
 import { CookiesProvider, useCookies } from "react-cookie";
 import Login from "./login";
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -23,9 +24,16 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
+/**
+ * This is really bad and I hate it but nest middleware doesn't seem
+ * to want to do what i want.
+ *
+ * it is good enough for now.
+ */
 function AuthProvider({ children }: { children: JSX.Element }) {
   const token = useAppSelector((state) => state.auth.token);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies(["app-jwt"]);
 
   useEffect(() => {
@@ -45,8 +53,14 @@ function AuthProvider({ children }: { children: JSX.Element }) {
 
   let auth = useAppSelector((state) => state.auth);
 
-  if (!auth.token) {
-    return <Login />;
+  const privateRoutes = ["/dashboard", "/workouts"];
+  if (!auth.token && privateRoutes.includes(router.pathname)) {
+    return (
+      <div data-test-id="please-authenticate">
+        <h1>To view this page, please login</h1>
+        <Login />
+      </div>
+    );
   }
   return children;
 }

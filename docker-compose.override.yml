@@ -4,6 +4,8 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        api_url: http://backend:8000
     volumes:
       - ./frontend:/app
     command: ["npm", "run", "dev"]
