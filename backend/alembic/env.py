@@ -1,4 +1,5 @@
 from logging.config import fileConfig
+from os import getenv
 
 from alembic import context
 from app.database import Base
@@ -25,6 +26,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+config.set_main_option('sqlalchemy.url', getenv('DATABASE_URI'));
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
