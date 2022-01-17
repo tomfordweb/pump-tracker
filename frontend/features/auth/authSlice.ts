@@ -70,7 +70,6 @@ export const authSlice = createSlice({
     });
 
     builder.addCase(authHealthcheck.fulfilled, (state, { payload }) => {
-      console.log(payload);
       const { token, ...everythingElse } = payload;
       state.user = everythingElse;
       state.token = token;
