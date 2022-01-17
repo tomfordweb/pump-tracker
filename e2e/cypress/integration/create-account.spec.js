@@ -21,8 +21,7 @@ describe("/create-account page", () => {
     cy.get("#CreateAccountPage").submit();
     cy.intercept("/token").as("tokenCreate");
     cy.wait(["@tokenCreate"]).then((subject) => {
-      console.log("subject", subject);
+      cy.url().should("contain", "dashboard");
     });
-    cy.url().should("contain", "dashboard");
   });
 });
