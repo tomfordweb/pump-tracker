@@ -10,6 +10,7 @@ jobs:
     env:
       # Obviously, do not use this for anything
       SECRET_KEY: "fcb9aea222d23f0f1cb5c9522cc8fb0bd2b2c3117afd1b95e80874cedce8e30b"
+      DATABASE_URI: "sqlite:///test.db"
 
     steps:
       - uses: actions/checkout@v2
@@ -28,40 +29,33 @@ jobs:
       - name: Run tests with pytest
         run: pytest
 
-  test-frontend:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-    steps:
-      - uses: actions/checkout@v2
+  # run-e2e-tests:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+  #     - name: Run e2e tests
+  #       run: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml up --build --abort-on-container-exit --exit-code-from e2e
 
-      - name: Install js dependencies
-        working-directory: ./frontend
-        run: npm ci
+  # evaluate-frontend:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [16.x]
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: LInt app
-        working-directory: ./frontend
-        run: npm run lint
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #         cache: "npm"
+  #         cache-dependency-path: "**/package-lock.json"
 
-      - name: Test app
-        working-directory: ./frontend
-        run: npm run test
+  #     - name: Install js dependencies
+  #       working-directory: ./frontend
+  #       run: npm ci
 
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-      # TODO: mock backend, or figure out how to run app in compose
-      # - name: Cypress run
-      #   uses: cypress-io/github-action@v2
-      #   with:
-      #     build: npm run build
-      #     start: npm start
-      #     working-directory: ./frontend
-      #     config: baseUrl=http://localhost:3000
+  #     - name: Lint app
+  #       working-directory: ./frontend
+  #       run: npm run lint

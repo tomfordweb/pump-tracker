@@ -30,7 +30,10 @@ docker-compose run frontend npm run test
 For now run it locally so you can use cy.open, it would work in the container though..
 
 ```
-TODO
+# Local
+npm run cypress:local
+# Pipelines, prod build testing
+docker-compose run -f docker-compose.yml -f docker-compose.e2e.yml --build --abort-on-container_exit --exit-code-from e2e
 ```
 
 # DBA
