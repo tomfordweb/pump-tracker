@@ -25,15 +25,33 @@ const WorkoutCreateForm = () => {
         }}
       >
         <Form>
-          <label htmlFor="name">Workout Name</label>
-          <Field id="name" type="text" name="name" placeholder="Workout Name" />
-          <label htmlFor="description">Description</label>
-          <Field
-            id="description"
-            name="description"
-            placeholder="Workout Description"
-          />
-          <button type="submit">Submit</button>
+          <div>
+            <label htmlFor="name" className="block">
+              Workout Name
+            </label>
+            <Field
+              id="name"
+              type="text"
+              name="name"
+              className="block mb-3"
+              placeholder="Workout Name"
+            />
+          </div>
+          <div>
+            <label className="block" htmlFor="description">
+              Description
+            </label>
+            <Field
+              as="textarea"
+              id="description"
+              name="description"
+              className="block mb-3"
+              placeholder="Workout Description"
+            />
+          </div>
+          <button className="btn bg-dark text-white" type="submit">
+            Submit
+          </button>
         </Form>
       </Formik>
     </div>

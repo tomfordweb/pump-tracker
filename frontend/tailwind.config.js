@@ -14,6 +14,7 @@ module.exports = {
       light: "#3AAFA9",
       gray: "#DEF2F1",
       white: "#FEFFFF",
+      error: "#FF0000",
     },
     extend: {},
   },

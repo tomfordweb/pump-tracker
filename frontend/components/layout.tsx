@@ -10,11 +10,13 @@ export const DefaultLayout = (props: Props) => {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
   return (
-    <div>
-      <nav className="flex justify-between">
-        <h1>Exercise Tracker</h1>
+    <div className="px-3">
+      <nav className="py-5 flex justify-between">
+        <h1>
+          <Link href={token ? "/dashboard" : "/"}>Exercise Tracker</Link>
+        </h1>
         <ul className="flex">
-          <li className="hover:text-light">
+          <li className="mr-3 hover:text-light">
             <Link href="/dashboard">Dashboard</Link>
           </li>
           <li className="hover:text-light">
