@@ -8,6 +8,7 @@ from ..database import Base
 from ..dependencies import get_db
 from ..main import app
 
+# Note: this needs to be hardcoded, also update merge-request.yml test
 SQLALCHEMY_DATABASE_URL = "sqlite:///test.db"
 
 engine = create_engine(
