@@ -124,7 +124,6 @@ class User(UserBase):
     id: int
     username: str
     full_name: Optional[str] = None
-    workouts: List[Workout] = []
 
     class Config:
         orm_mode = True
