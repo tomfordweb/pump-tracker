@@ -40,7 +40,7 @@ function AuthProvider({ children }: { children: JSX.Element }) {
     setCookie("app-jwt", token);
     const healthcheck = setInterval(() => {
       dispatch(authHealthcheck(token));
-    }, 5000);
+    }, 30000);
     return () => clearInterval(healthcheck);
   }, [token]);
 

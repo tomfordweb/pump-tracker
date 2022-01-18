@@ -43,27 +43,59 @@ const CreateAccount: NextPage = () => {
         }}
       >
         <Form id="CreateAccountPage">
-          <label htmlFor="username">Username</label>
-          <Field id="username" name="username" placeholder="Username" />
-          <ErrorMessage name="username" />
-          <label htmlFor="email">Email</label>
-          <Field id="email" name="email" type="email" placeholder="Email" />
-          <ErrorMessage name="email" />
-          <label htmlFor="password1">Password</label>
-          <Field
-            id="password1"
-            name="password1"
-            type="password"
-            placeholder="Password"
-          />
-          <label htmlFor="password2">Password Confirmation</label>
-          <Field
-            id="password2"
-            name="password2"
-            type="password"
-            placeholder="Password Confirmation"
-          />
-          <button type="submit">Submit</button>
+          <div>
+            <label className="block" htmlFor="username">
+              Username
+            </label>
+            <Field
+              type="text"
+              id="username"
+              className="block"
+              name="username"
+              placeholder="Username"
+            />
+            <span className="block text-error">
+              <ErrorMessage name="username" />
+            </span>
+          </div>
+          <div>
+            <label className="block" htmlFor="email">
+              Email
+            </label>
+            <Field id="email" name="email" type="email" placeholder="Email" />
+            <span className="block text-error">
+              <ErrorMessage name="email" />
+            </span>
+          </div>
+          <div>
+            <label className="block" htmlFor="password1">
+              Password
+            </label>
+            <Field
+              id="password1"
+              className="block"
+              name="password1"
+              type="password"
+              placeholder="Password"
+            />
+          </div>
+          <div>
+            <label className="block" htmlFor="password2">
+              Password Confirmation
+            </label>
+            <Field
+              id="password2"
+              className="block"
+              name="password2"
+              type="password"
+              placeholder="Password Confirmation"
+            />
+          </div>
+          <div>
+            <button type="submit" className="btn bg-dark text-white">
+              Create Account
+            </button>
+          </div>
         </Form>
       </Formik>
     </div>

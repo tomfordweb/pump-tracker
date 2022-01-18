@@ -7,6 +7,7 @@ services:
       args:
         env: production
         api_url: http://backend:8000
+        prod_build: "yes"
     command: ["npm", "run", "start"]
     ports:
       - 3000:3000

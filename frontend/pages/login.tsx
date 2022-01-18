@@ -27,19 +27,33 @@ const Login: NextPage = () => {
         }}
       >
         <Form>
-          <label htmlFor="username">Username</label>
-          <Field id="username" name="username" placeholder="Username" />
-          <label htmlFor="password">Password</label>
+          <div>
+            <label className="block" htmlFor="username">
+              Username
+            </label>
+            <Field
+              type="text"
+              className="block mb-3"
+              id="username"
+              name="username"
+            />
+          </div>
+          <label className="block" htmlFor="password">
+            Password
+          </label>
           <Field
             id="password"
             name="password"
             type="password"
+            className="block mb-3"
             placeholder="Password"
           />
-          <button type="submit">Submit</button>
+          <button type="submit" className="btn bg-dark text-white">
+            Submit
+          </button>
         </Form>
       </Formik>
-      <p>
+      <p className="bg-blue-500">
         <Link href="/create-account">Create New Account</Link>
       </p>
     </div>
