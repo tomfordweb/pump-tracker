@@ -2,6 +2,7 @@ FROM node:lts-buster as builder
 
 ARG env=local
 ARG api_url=
+ARG prod_build=
 
 ENV NEXT_PUBLIC_API_URL=$api_url
 ARG REACT_APP_CI_BUILD=production
@@ -16,5 +17,5 @@ RUN npm install
 
 COPY ./ ./
 
- # RUN npm run build
+RUN if [ ! -z $prod_build ] ; then npm run build; fi
 
