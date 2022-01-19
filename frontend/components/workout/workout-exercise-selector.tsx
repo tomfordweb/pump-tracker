@@ -3,6 +3,8 @@ import { generateJwtHeaders, getFromApi, postJsonToApi } from "../../client";
 import { selectToken } from "../../features/auth/authSlice";
 import { Exercise } from "../../features/workoutSlice";
 import { useAppSelector } from "../../hooks";
+import ExerciseMiniCard from "../exercise/exercise-mini-card";
+import Grid from "../grid";
 
 interface Props {
   exercises: Exercise[];
@@ -25,24 +27,13 @@ const WorkoutExerciseSelector = ({ exercises, exerciseClicked }: Props) => {
     activeExerciseKeys && activeExerciseKeys.includes(exerciseId);
 
   return (
-    <div>
+    <div className="grid grid-cols-2 md:grid-cols-4">
       {allExercises.map((exercise) => (
-        <div
-          key={exercise.id}
-          onClick={() =>
-            exerciseClicked({
-              exercise: exercise.id,
-              active: !isActiveExercise(exercise.id),
-            })
-          }
-          className={[
-            isActiveExercise(exercise.id)
-              ? "border-dashed border-2 border-dark"
-              : "",
-          ].join(" ")}
-        >
-          {exercise.name}
-        </div>
+        <ExerciseMiniCard
+          exercise={exercise}
+          isActive={isActiveExercise(exercise.id)}
+          exerciseClicked={exerciseClicked}
+        />
       ))}
     </div>
   );

@@ -13,6 +13,9 @@ def get_exercise(db: Session, exercise_id: int):
     return db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
 
 def create_exercise(db: Session, exercise: schemas.ExerciseCreate, user: schemas.User):
+    """
+    TODO: Make sure that there is no duplicate name for the exercise FOR THE OWNER. there can be duplicate names but not per owner.
+    """
     db_item = models.Exercise(**exercise.dict(), owner_id=user.id)
     db.add(db_item)
     db.commit()

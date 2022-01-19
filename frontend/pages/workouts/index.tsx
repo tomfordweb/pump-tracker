@@ -11,7 +11,6 @@ import {
   Workout,
 } from "../../features/workoutSlice";
 import { selectToken } from "../../features/auth/authSlice";
-import { NextPage } from "next";
 import WorkoutMiniCard from "../../components/workout/workout-mini-card";
 
 const Workouts = () => {
@@ -25,10 +24,14 @@ const Workouts = () => {
   return (
     <div>
       <h1>Workouts List</h1>
-      <div className="flex flex-wrap">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {workouts.map((workout) => (
-          <div key={workout.id} className="w-1/4 mb-3">
-            <WorkoutMiniCard workout={workout} />
+          <div className="cursor-pointer">
+            <Link href={`/workouts/${workout.id}`}>
+              <div>
+                <WorkoutMiniCard key={workout.id} workout={workout} />
+              </div>
+            </Link>
           </div>
         ))}
       </div>

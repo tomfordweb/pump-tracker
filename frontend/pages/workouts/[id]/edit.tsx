@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import {
@@ -7,7 +6,9 @@ import {
   getFromApi,
   postJsonToApi,
 } from "../../../client";
-import ExerciseMiniCard from "../../../components/exercise/exercise-mini-card";
+import ExerciseForm from "../../../components/exercise/exercise-form";
+import PageTitle from "../../../components/page-title";
+import WorkoutExerciseSelector from "../../../components/workout/workout-exercise-selector";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
   getWorkoutById,
@@ -15,7 +16,7 @@ import {
 } from "../../../features/workoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 
-const Workout = () => {
+const WorkoutEdit = () => {
   const router = useRouter();
   const state = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
@@ -36,7 +37,9 @@ const Workout = () => {
       ? postJsonToApi(url, {}, generateJwtHeaders(token))
       : deleteFromApi(url, generateJwtHeaders(token));
 
-    await promise.then((data) => data.json()).then(() => updateWorkoutApi());
+    await promise
+      .then((data) => data.json())
+      .then((response) => updateWorkoutApi());
   };
 
   useEffect(() => {
@@ -44,28 +47,33 @@ const Workout = () => {
   }, []);
 
   return workout ? (
-    <section>
-      <header>
-        <h1>Workout: {workout.name}</h1>
-        <nav>
-          <ul>
-            <li>
-              <Link href={`/workouts/${workout.id}/edit`}>Edit</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <div className="grid grid-cols-2 md:grid-cols-4">
-        {workout.exercises &&
-          workout.exercises.map((exercise) => (
-            <ExerciseMiniCard key={exercise.id} exercise={exercise} />
-          ))}
-      </div>
-      {(!workout.exercises || workout.exercises.length === 0) && (
-        <p>There are no exercises for {workout.name}</p>
-      )}
-    </section>
+    <div>
+      <section>
+        <header className="text-xl">
+          <PageTitle>Workout: {workout.name}</PageTitle>
+        </header>
+
+        <WorkoutExerciseSelector
+          exerciseClicked={(props) => handleExerciseClick(props)}
+          exercises={workout.exercises}
+        />
+      </section>
+      <section>
+        <header>
+          <h2>Create a new exercise for {workout.name}</h2>
+        </header>
+        <ExerciseForm
+          onSubmit={(createdExercise) =>
+            postJsonToApi(
+              `/workouts/${workout.id}/exercises/${createdExercise.id}`,
+              {},
+              generateJwtHeaders(token)
+            ).then(() => updateWorkoutApi())
+          }
+        />
+      </section>
+    </div>
   ) : null;
 };
 
-export default Workout;
+export default WorkoutEdit;
