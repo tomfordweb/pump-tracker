@@ -15,7 +15,9 @@ const Login: NextPage = () => {
   const router = useRouter();
 
   const dipatchLogin = async (data: TokenCreate) => {
-    await dispatch(loginToAccount(data)).unwrap();
+    await dispatch(loginToAccount(data))
+      .unwrap()
+      .then(() => router.push("/dashboard"));
   };
 
   return (

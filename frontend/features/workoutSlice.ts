@@ -24,6 +24,17 @@ export interface WorkoutCreate extends WorkoutBase {}
 
 export interface Workout extends WorkoutBase {
   id: number;
+  exercises: Exercise[];
+}
+
+export interface Exercise {
+  id: number;
+  name: string;
+  avatar_id: number;
+  date_updated: string;
+  description: string;
+  date_created: string;
+  owner_id: number;
 }
 
 export const workoutSlice = createSlice({
@@ -108,10 +119,19 @@ export const getWorkoutById = createAsyncThunk<
     if (isNaN(workout)) {
       return rejectWithValue(false);
     }
-    return await getFromApi(
+    const workoutApi = await getFromApi(
       `/workouts/${workout}`,
       generateJwtHeaders(token)
     ).then((data) => data.json());
+
+    const exercisesApi = await getFromApi(
+      `/workouts/${workout}/exercises`,
+      generateJwtHeaders(token)
+    ).then((data) => data.json());
+    return {
+      ...workoutApi,
+      exercises: exercisesApi,
+    };
   } catch (err) {
     return rejectWithValue(false);
   }

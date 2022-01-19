@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 describe("/workouts page", () => {
+  it("upon creating an exercise on the workout page - it will add the exercise to the workout", () => {});
   // it('can navigate from homepage to the "workouts" page', () => {
   //   cy.visit("/");
   //   cy.get("nav a").contains("Workouts").click();
