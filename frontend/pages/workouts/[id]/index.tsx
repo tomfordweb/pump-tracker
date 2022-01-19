@@ -58,7 +58,7 @@ const Workout = () => {
             `/workouts/${workout.id}/exercises/${createdExercise.id}`,
             {},
             generateJwtHeaders(token)
-          )
+          ).then(() => updateWorkoutApi())
         }
       />
     </div>
