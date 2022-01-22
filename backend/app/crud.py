@@ -53,23 +53,6 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-# TODO: is this used?
-def create_user_workout_plan(db: Session, plan: schemas.PlanCreate, user: schemas.User):
-    db_item = models.Plan(**plan.dict(), owner_id=user.id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-
-# TODO: is this used?
-def add_workout_to_user_plan(db: Session, workout: schemas.WorkoutCreate, plan: schemas.Plan, user: schemas.User):
-    db_item = models.Workout(**workout.dict(), owner_id=user.id)
-    db.add(db_item)
-    plan.workouts.append(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-
 """
 Workout CRUD
 """
@@ -98,5 +81,25 @@ def update_workout(db: Session, workout_id:int, workout: schemas.WorkoutUpdate):
 """
 Plan/Routine CRUD
 """
+def get_plans(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Plan).offset(skip).limit(limit).all()
+
 def get_plan(db: Session, plan_id: int):
-    return db.query(models.User).filter(models.Plan.id == plan_id).first()
+    return db.query(models.Plan).filter(models.Plan.id == plan_id).first()
+
+# TODO: is this used?
+def create_user_workout_plan(db: Session, plan: schemas.PlanCreate, user: schemas.User):
+    db_item = models.Plan(**plan.dict(), owner_id=user.id)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+# TODO: is this used?
+def add_workout_to_user_plan(db: Session, workout: schemas.WorkoutCreate, plan: schemas.Plan, user: schemas.User):
+    db_item = models.Workout(**workout.dict(), owner_id=user.id)
+    db.add(db_item)
+    plan.workouts.append(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item

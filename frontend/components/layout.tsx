@@ -22,6 +22,9 @@ export const DefaultLayout = (props: Props) => {
             <Link href="/dashboard">Dashboard</Link>
           </li>
           <li className="mr-3 hover:text-light">
+            <Link href="/plans">Workout Plans</Link>
+          </li>
+          <li className="mr-3 hover:text-light">
             <Link href="/workouts">Workouts</Link>
           </li>
           <li className="hover:text-light">

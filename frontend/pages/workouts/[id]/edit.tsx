@@ -44,7 +44,7 @@ const WorkoutEdit = () => {
 
   useEffect(() => {
     updateWorkoutApi();
-  }, []);
+  }, [workoutId]);
 
   return workout ? (
     <div>

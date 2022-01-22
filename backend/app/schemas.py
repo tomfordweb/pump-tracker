@@ -78,13 +78,13 @@ class Token(BaseModel):
 class PlanBase(BaseModel):
     name: str
     description: str
-    avatar_id: int
-    owner_id: int
 
 class PlanCreate(PlanBase):
     pass
 
 class Plan(PlanBase):
+    avatar_id: int
+    owner_id: int
     id: int
     date_updated: datetime.date
     date_created: datetime.date
