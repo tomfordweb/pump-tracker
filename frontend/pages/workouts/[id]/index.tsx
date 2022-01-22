@@ -7,7 +7,9 @@ import {
   getFromApi,
   postJsonToApi,
 } from "../../../client";
+import Breadcrumb from "../../../components/breadcrumb";
 import ExerciseMiniCard from "../../../components/exercise/exercise-mini-card";
+import PageTitle from "../../../components/page-title";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
   getWorkoutById,
@@ -41,20 +43,22 @@ const Workout = () => {
 
   useEffect(() => {
     updateWorkoutApi();
-  }, []);
+  }, [workoutId]);
 
   return workout ? (
     <section>
-      <header>
-        <h1>Workout: {workout.name}</h1>
-        <nav>
-          <ul>
-            <li>
-              <Link href={`/workouts/${workout.id}/edit`}>Edit</Link>
-            </li>
-          </ul>
-        </nav>
+      <header className="mb-5">
+        <Breadcrumb />
+        <div className="flex">
+          <div className="grow">
+            <PageTitle>Workout: {workout.name}</PageTitle>
+          </div>
+          <div>
+            <Link href={`/workouts/${workout.id}/edit`}>Edit</Link>
+          </div>
+        </div>
       </header>
+
       <div className="grid grid-cols-2 md:grid-cols-4">
         {workout.exercises &&
           workout.exercises.map((exercise) => (

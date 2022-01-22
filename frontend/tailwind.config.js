@@ -10,6 +10,8 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
+      link: "#0000FF",
+      "link-active": "#3AAFA9",
       black: "#17252A",
       dark: "#2B7A7B",
       light: "#3AAFA9",

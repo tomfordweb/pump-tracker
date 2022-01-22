@@ -6,6 +6,7 @@ import {
   getFromApi,
   postJsonToApi,
 } from "../../../client";
+import Breadcrumb from "../../../components/breadcrumb";
 import ExerciseForm from "../../../components/exercise/exercise-form";
 import PageTitle from "../../../components/page-title";
 import WorkoutExerciseSelector from "../../../components/workout/workout-exercise-selector";
@@ -49,8 +50,9 @@ const WorkoutEdit = () => {
   return workout ? (
     <div>
       <section>
-        <header className="text-xl">
+        <header>
           <PageTitle>Workout: {workout.name}</PageTitle>
+          <Breadcrumb />
         </header>
 
         <WorkoutExerciseSelector
