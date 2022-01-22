@@ -6,10 +6,8 @@ import {
   getFromApi,
   postJsonToApi,
 } from "../../../client";
-import Breadcrumb from "../../../components/breadcrumb";
 import ExerciseForm from "../../../components/exercise/exercise-form";
 import PageHeader from "../../../components/page-header";
-import PageTitle from "../../../components/page-title";
 import WorkoutExerciseSelector from "../../../components/workout/workout-exercise-selector";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
