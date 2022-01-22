@@ -9,6 +9,7 @@ import {
 } from "../../../client";
 import Breadcrumb from "../../../components/breadcrumb";
 import ExerciseMiniCard from "../../../components/exercise/exercise-mini-card";
+import PageHeader from "../../../components/page-header";
 import PageTitle from "../../../components/page-title";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
@@ -29,35 +30,16 @@ const Workout = () => {
   const updateWorkoutApi = () =>
     dispatch(getWorkoutById({ workout: workoutId, token: token }));
 
-  const handleExerciseClick = async (props: {
-    exercise: number;
-    active: boolean;
-  }) => {
-    const url = `/workouts/${workout.id}/exercises/${props.exercise}`;
-    const promise = props.active
-      ? postJsonToApi(url, {}, generateJwtHeaders(token))
-      : deleteFromApi(url, generateJwtHeaders(token));
-
-    await promise.then((data) => data.json()).then(() => updateWorkoutApi());
-  };
-
   useEffect(() => {
     updateWorkoutApi();
   }, [workoutId]);
 
   return workout ? (
     <section>
-      <header className="mb-5">
-        <Breadcrumb />
-        <div className="flex">
-          <div className="grow">
-            <PageTitle>Workout: {workout.name}</PageTitle>
-          </div>
-          <div>
-            <Link href={`/workouts/${workout.id}/edit`}>Edit</Link>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title={`Workout: ${workout.name}`}
+        rightContent={<Link href={`/workouts/${workout.id}/edit`}>Edit</Link>}
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4">
         {workout.exercises &&

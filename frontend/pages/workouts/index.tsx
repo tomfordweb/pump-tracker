@@ -12,7 +12,7 @@ import {
 } from "../../features/workoutSlice";
 import { selectToken } from "../../features/auth/authSlice";
 import WorkoutMiniCard from "../../components/workout/workout-mini-card";
-import PageTitle from "../../components/page-title";
+import PageHeader from "../../components/page-header";
 
 const Workouts = () => {
   const dispatch = useAppDispatch();
@@ -24,7 +24,7 @@ const Workouts = () => {
   }, [token]);
   return (
     <div>
-      <PageTitle>Workouts List</PageTitle>
+      <PageHeader title="Workouts List" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {workouts.map((workout) => (
           <div className="cursor-pointer">

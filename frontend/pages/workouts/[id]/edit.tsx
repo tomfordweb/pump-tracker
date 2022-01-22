@@ -8,6 +8,7 @@ import {
 } from "../../../client";
 import Breadcrumb from "../../../components/breadcrumb";
 import ExerciseForm from "../../../components/exercise/exercise-form";
+import PageHeader from "../../../components/page-header";
 import PageTitle from "../../../components/page-title";
 import WorkoutExerciseSelector from "../../../components/workout/workout-exercise-selector";
 import { selectToken } from "../../../features/auth/authSlice";
@@ -50,10 +51,7 @@ const WorkoutEdit = () => {
   return workout ? (
     <div>
       <section>
-        <header>
-          <PageTitle>Workout: {workout.name}</PageTitle>
-          <Breadcrumb />
-        </header>
+        <PageHeader title={`Edit Workout: ${workout.name}`} />
 
         <WorkoutExerciseSelector
           exerciseClicked={(props) => handleExerciseClick(props)}
