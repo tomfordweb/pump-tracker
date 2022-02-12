@@ -20,7 +20,7 @@ class WorkoutCreate(WorkoutBase):
     pass
 
 class WorkoutPlanWorkoutAssociate(BaseModel):
-    workout_id:int
+    session_index:int
     pass
 
 class UserBase(BaseModel):
@@ -78,6 +78,7 @@ class Token(BaseModel):
 class PlanBase(BaseModel):
     name: str
     description: str
+    length_in_days: int
 
 class PlanCreate(PlanBase):
     pass
