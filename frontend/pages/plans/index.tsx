@@ -31,7 +31,7 @@ const Plans = () => {
       <PageHeader title="Exercise Plans" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {plans.map((plan) => (
-          <div className="cursor-pointer">
+          <div key={plan.id} className="cursor-pointer">
             <Link href={`/plans/${plan.id}`}>{plan.name}</Link>
           </div>
         ))}

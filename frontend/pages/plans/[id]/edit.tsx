@@ -1,24 +1,15 @@
 import { useRouter } from "next/router";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useEffect } from "react";
-import {
-  deleteFromApi,
-  generateJwtHeaders,
-  getFromApi,
-  postJsonToApi,
-} from "../../../client";
-import ExerciseForm from "../../../components/exercise/exercise-form";
 import PageHeader from "../../../components/page-header";
-import WorkoutExerciseSelector from "../../../components/workout/workout-exercise-selector";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
   getWorkoutPlanById,
   selectWorkoutPlanById,
 } from "../../../features/planSlice";
-import {
-  getWorkoutById,
-  selectWorkoutById,
-} from "../../../features/workoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import MicrocycleEditor from "../../../components/plan/MicrocycleEditor";
+import { getAllWorkouts, selectWorkouts } from "../../../features/workoutSlice";
 
 const WorkoutPlanEdit = () => {
   const router = useRouter();
@@ -28,6 +19,7 @@ const WorkoutPlanEdit = () => {
   const planId = parseInt(id as string);
   const plan = selectWorkoutPlanById(state, planId);
   const token = selectToken(state);
+  const workouts = selectWorkouts(state);
 
   const updateWorkoutPlanApi = () =>
     dispatch(getWorkoutPlanById({ plan: planId, token: token }));
@@ -36,12 +28,18 @@ const WorkoutPlanEdit = () => {
     updateWorkoutPlanApi();
   }, [planId]);
 
+  useEffect(() => {
+    dispatch(getAllWorkouts({ token }));
+  }, [token]);
+
   return plan ? (
     <div>
       <section>
         <PageHeader title={`Edit Plan: ${plan.name}`} />
       </section>
-      <section></section>
+      <section>
+        <MicrocycleEditor workouts={workouts} />
+      </section>
     </div>
   ) : null;
 };

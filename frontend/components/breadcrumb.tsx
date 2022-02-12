@@ -20,6 +20,7 @@ const Breadcrumb = () => {
     <ul className="mb-3">
       {crumbs.map((crumb, i) => (
         <li
+          key={i}
           className={[
             router.asPath === crumb.href ? "underline text-black" : "text-link",
             "inline mr-3",
