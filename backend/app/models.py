@@ -20,15 +20,19 @@ class User(Base):
     workout_plans = relationship("Plan", back_populates="owner")
 
 
-plan_workout_association_table = Table('plan_workout', Base.metadata,
-    Column('plans_id', ForeignKey('plans.id')),
-    Column('workouts_id', ForeignKey('workouts.id'))
-)
 
 workout_exercise_association_table = Table('workout_exercise', Base.metadata,
     Column('workouts_id', ForeignKey('workouts.id')),
     Column('exercises_id', ForeignKey('exercises.id'))
 )
+
+class PlanWorkout(Base):
+    __tablename__ = 'plan_workout'
+    plan_id = Column(Integer, ForeignKey('plans.id'), primary_key=True)
+    workout_id = Column(Integer, ForeignKey('workouts.id'), primary_key=True)
+    microcycle_index = Column(Integer)
+    plan = relationship("Plan", back_populates="workouts")
+    workout = relationship("Workout", back_populates="plans")
 
 class Workout(Base):
     """
@@ -46,11 +50,12 @@ class Workout(Base):
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
 
+    plans = relationship("PlanWorkout",  back_populates="workout")
     exercises = relationship("Exercise", secondary=workout_exercise_association_table)
 
 class Plan(Base):
     """
-    A plan is a long term exercise routine.
+    A microcycle
     It contains many workouts
     """
 
@@ -60,13 +65,14 @@ class Plan(Base):
     name = Column(String)
     description = Column(String)
     avatar_id = Column(Integer, index=True)
+    length_in_days = Column(Integer)
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
 
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="workout_plans")
 
-    workouts = relationship("Workout", secondary=plan_workout_association_table)
+    workouts = relationship("PlanWorkout", back_populates="plan")
 
 
 class Exercise(Base):
