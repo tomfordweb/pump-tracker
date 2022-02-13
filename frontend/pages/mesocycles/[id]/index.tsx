@@ -1,25 +1,14 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import {
-  deleteFromApi,
-  generateJwtHeaders,
-  getFromApi,
-  postJsonToApi,
-} from "../../../client";
-import Breadcrumb from "../../../components/breadcrumb";
-import ExerciseMiniCard from "../../../components/exercise/exercise-mini-card";
 import PageHeader from "../../../components/page-header";
-import PageTitle from "../../../components/page-title";
+import MicrocycleEditor from "../../../components/plan/MicrocycleEditor";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
   getWorkoutPlanById,
   selectWorkoutPlanById,
 } from "../../../features/planSlice";
-import {
-  getWorkoutById,
-  selectWorkoutById,
-} from "../../../features/workoutSlice";
+import { getAllWorkouts, selectWorkouts } from "../../../features/workoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 
 const WorkoutPlan = () => {
@@ -29,12 +18,14 @@ const WorkoutPlan = () => {
   const { id } = router.query;
   const planId = parseInt(id as string);
   const plan = selectWorkoutPlanById(state, planId);
+  const workouts = selectWorkouts(state);
   const token = selectToken(state);
 
   const updateWorkoutPlanApi = () =>
     dispatch(getWorkoutPlanById({ plan: planId, token: token }));
 
   useEffect(() => {
+    dispatch(getAllWorkouts({ token }));
     updateWorkoutPlanApi();
   }, [planId]);
 
@@ -42,8 +33,12 @@ const WorkoutPlan = () => {
     <section>
       <PageHeader
         title={`${plan.name}`}
-        rightContent={<Link href={`/plans/${plan.id}/edit`}>Edit</Link>}
+        rightContent={<Link href={`/mesocycles/${plan.id}/edit`}>Edit</Link>}
       />
+
+      <article>
+        <MicrocycleEditor plan={plan} workouts={workouts} />
+      </article>
     </section>
   ) : null;
 };

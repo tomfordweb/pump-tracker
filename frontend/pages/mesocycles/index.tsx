@@ -29,13 +29,13 @@ const Plans = () => {
   return (
     <div>
       <PageHeader
-        title="Exercise Plans"
-        rightContent={<Link href={`/plans/create`}>Create New</Link>}
+        title="Your Mesocycles"
+        rightContent={<Link href={`/mesocycles/create`}>Create New</Link>}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {plans.map((plan) => (
           <div key={plan.id} className="cursor-pointer">
-            <Link href={`/plans/${plan.id}`}>{plan.name}</Link>
+            <Link href={`/mesocycles/${plan.id}`}>{plan.name}</Link>
           </div>
         ))}
       </div>

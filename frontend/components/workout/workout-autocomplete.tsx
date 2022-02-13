@@ -42,7 +42,6 @@ const WorkoutAutocomplete = ({ workouts, selectWorkout }: Props) => {
     .map((filteredWorkout) => (
       <div key={filteredWorkout.id} className="border border-dark m-1">
         <WorkoutMiniCard
-          active={highlightedWorkout === filteredWorkout.id}
           onClick={(id) => setHighlightedWorkout(id)}
           workout={filteredWorkout}
         />

@@ -6,6 +6,7 @@ import {
 
 import { generateJwtHeaders, getFromApi, postJsonToApi } from "../client";
 import { RootState } from "../store";
+import { Exercise } from "./exerciseSlice";
 
 interface WorkoutsState {
   workouts: Workout[];
@@ -25,16 +26,6 @@ export interface WorkoutCreate extends WorkoutBase {}
 export interface Workout extends WorkoutBase {
   id: number;
   exercises: Exercise[];
-}
-
-export interface Exercise {
-  id: number;
-  name: string;
-  avatar_id: number;
-  date_updated: string;
-  description: string;
-  date_created: string;
-  owner_id: number;
 }
 
 export const workoutSlice = createSlice({

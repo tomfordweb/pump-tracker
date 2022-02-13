@@ -4,7 +4,12 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 
-import { generateJwtHeaders, getFromApi, postJsonToApi } from "../client";
+import {
+  generateJwtHeaders,
+  getFromApi,
+  postJsonToApi,
+  putJsonToApi,
+} from "../client";
 import { RootState } from "../store";
 
 interface ExerciseState {
@@ -13,16 +18,17 @@ interface ExerciseState {
 
 export interface ExerciseBase {
   name: string;
-  avatar_id: number;
-  date_updated: string;
+  avatar_id: number | string;
+  is_public: boolean;
   description: string;
-  date_created: string;
-  owner_id: number;
 }
 
 export interface ExerciseCreate extends ExerciseBase {}
 
 export interface Exercise extends ExerciseBase {
+  owner_id: number;
+  date_created: string;
+  date_updated: string;
   id: number;
 }
 const initialState: ExerciseState = {
@@ -75,6 +81,25 @@ export const createNewExercise = createAsyncThunk<
   try {
     return await postJsonToApi(
       "/exercises",
+      exercise,
+      generateJwtHeaders(token)
+    ).then((data) => data.json());
+  } catch (err) {
+    return rejectWithValue(false);
+  }
+});
+
+export const updateExercise = createAsyncThunk<
+  Exercise,
+  {
+    exercise: Exercise;
+    token: string;
+  },
+  { rejectValue: boolean }
+>("exercises/update", async ({ exercise, token }, { rejectWithValue }) => {
+  try {
+    return await putJsonToApi(
+      `/exercises/${exercise.id}`,
       exercise,
       generateJwtHeaders(token)
     ).then((data) => data.json());

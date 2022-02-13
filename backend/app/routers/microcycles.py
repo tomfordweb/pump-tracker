@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from .. import crud, schemas
-from ..dependencies import get_current_active_user, get_db
+from ..dependencies import (get_current_active_user, get_db,
+                            get_microcycle_from_path)
 
 router = APIRouter()
 @router.post("/microcycles")
@@ -15,10 +16,13 @@ async def get_all_microcycles(current_user: schemas.User = Depends(get_current_a
     plans = crud.get_microcycles(db)
     return plans
 
-@router.get("/microcycles/{plan_id}")
-async def get_microcycle(plan_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
-    plan = crud.get_microcycle(db, plan_id)
-    return plan
+@router.get("/microcycles/{microcycle_id}")
+async def get_microcycle(microcycle: schemas.Microcycle = Depends(get_microcycle_from_path), current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+    return microcycle
+
+@router.put("/microcycles/{microcycle_id}")
+async def update_microcycle(microcycle_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+    pass
 
 # TODO: Add ordering!
 @router.get("/microcycles/{plan_id}/sessions")

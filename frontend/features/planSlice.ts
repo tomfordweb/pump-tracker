@@ -33,6 +33,9 @@ export interface WorkoutPlan extends WorkoutPlanBase {
   id: number;
   avatar_id: number;
   owner_id: number;
+  length_in_days: number;
+  date_created: string;
+  date_updated: string;
   sessions: MicrocycleSession[];
 }
 

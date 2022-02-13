@@ -22,7 +22,7 @@ const Workouts = () => {
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {workouts.map((workout) => (
-          <div className="cursor-pointer">
+          <div key={workout.id} className="cursor-pointer">
             <Link href={`/workouts/${workout.id}`}>
               <div>
                 <WorkoutMiniCard key={workout.id} workout={workout} />

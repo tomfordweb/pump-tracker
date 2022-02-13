@@ -3,22 +3,16 @@ import { useEffect } from "react";
 import {
   deleteFromApi,
   generateJwtHeaders,
-  getFromApi,
   postJsonToApi,
 } from "../../../client";
 import ExerciseForm from "../../../components/exercise/exercise-form";
 import PageHeader from "../../../components/page-header";
-import WorkoutExerciseSelector from "../../../components/workout/workout-exercise-selector";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
   ExerciseCreate,
   getExerciseById,
   selectExerciseById,
 } from "../../../features/exerciseSlice";
-import {
-  getWorkoutById,
-  selectWorkoutById,
-} from "../../../features/workoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 
 const ExerciseEdit = () => {
@@ -32,20 +26,6 @@ const ExerciseEdit = () => {
 
   const updateExerciseApi = () =>
     dispatch(getExerciseById({ exercise: exerciseId, token: token }));
-
-  const handleExerciseClick = async (props: {
-    exercise: number;
-    active: boolean;
-  }) => {
-    const url = `/exercises/${exercise.id}/exercises/${props.exercise}`;
-    const promise = props.active
-      ? postJsonToApi(url, {}, generateJwtHeaders(token))
-      : deleteFromApi(url, generateJwtHeaders(token));
-
-    await promise
-      .then((data) => data.json())
-      .then((response) => updateExerciseApi());
-  };
 
   const handleFormSubmit = (exerciseCreate: ExerciseCreate) => {
     // postJsonToApi(
@@ -64,6 +44,7 @@ const ExerciseEdit = () => {
       <PageHeader title={`Edit Exercise: ${exercise.name}`} />
       <section>
         <ExerciseForm
+          values={exercise}
           onSubmit={(createdExercise) => handleFormSubmit(createdExercise)}
         />
       </section>

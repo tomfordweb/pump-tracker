@@ -30,6 +30,7 @@ const WorkoutExerciseSelector = ({ exercises, exerciseClicked }: Props) => {
     <div className="grid grid-cols-2 md:grid-cols-4">
       {allExercises.map((exercise) => (
         <ExerciseMiniCard
+          key={exercise.id}
           exercise={exercise}
           isActive={isActiveExercise(exercise.id)}
           exerciseClicked={exerciseClicked}

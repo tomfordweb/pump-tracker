@@ -29,7 +29,7 @@ const ExercisePlanCreate = () => {
         dispatch(createNewWorkoutPlan({ plan: values, token: token || "" }))
           .unwrap()
           .then((data) => {
-            router.push(`/plans/${data.id}`);
+            router.push(`/microcycles/${data.id}`);
           })
           .catch((error: AppHttpError) => setError(error.message));
       }}

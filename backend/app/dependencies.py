@@ -93,6 +93,15 @@ async def get_current_user_exercise_from_path(exercise: schemas.Exercise = Depen
     return exercise
 
 
+async def get_microcycle_from_path(microcycle_id: int = Path('microcycle_id'), database: Session = Depends(get_db)):
+    microcycle = crud.get_microcycle(database, microcycle_id)
+    if microcycle is None:
+        raise HTTPException(
+            status_code=404,
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return microcycle
+
 async def get_workout_from_path(workout_id: int = Path('workout_id'), database: Session = Depends(get_db)):
     workout = crud.get_workout(database, workout_id)
     if workout is None:

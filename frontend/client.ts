@@ -83,3 +83,18 @@ export async function postJsonToApi(
     body: JSON.stringify(payload),
   }).then(handleErrors);
 }
+
+export async function putJsonToApi(
+  url: string,
+  payload: Record<string, any> = {},
+  headers: Record<string, string> = {}
+): Promise<Response> {
+  return fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+    method: "PUT",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  }).then(handleErrors);
+}

@@ -4,32 +4,41 @@ import { AppHttpError, generateJwtHeaders, postJsonToApi } from "../../client";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useRouter } from "next/router";
 import { createNewWorkout, Workout } from "../../features/workoutSlice";
+import {
+  createNewExercise,
+  Exercise,
+  ExerciseCreate,
+  updateExercise,
+} from "../../features/exerciseSlice";
 
-interface MyFormValues {
-  name: string;
-  description: string;
-  is_public: boolean;
-}
 interface Props {
-  onSubmit: (data) => {};
+  onSubmit: (data: ExerciseCreate) => void;
+  values?: Exercise;
 }
-const ExerciseForm = ({ onSubmit }: Props) => {
-  const router = useRouter();
-  const initialValues: MyFormValues = {
+const ExerciseForm = ({ values, onSubmit }: Props) => {
+  const initialValues: ExerciseCreate | Exercise = {
     is_public: false,
+    avatar_id: "",
     name: "",
     description: "",
   };
+
   const token = useAppSelector((state) => state.auth.token);
-  const [error, setError] = useState("");
   const dispatch = useAppDispatch();
   return (
     <Formik
-      initialValues={initialValues}
-      onSubmit={(values, actions) => {
-        postJsonToApi("/exercises", values, generateJwtHeaders(token))
-          .then((data) => data.json())
-          .then((data) => onSubmit && onSubmit(data));
+      initialValues={values || initialValues}
+      onSubmit={(formData, actions) => {
+        if (token && values) {
+          values.id
+            ? dispatch(
+                updateExercise({
+                  exercise: formData as Exercise,
+                  token,
+                })
+              )
+            : dispatch(createNewExercise({ exercise: formData, token }));
+        }
       }}
     >
       <Form>
@@ -45,10 +54,21 @@ const ExerciseForm = ({ onSubmit }: Props) => {
             placeholder="Workout Name"
           />
         </div>
+        <div>
+          <label htmlFor="name" className="block">
+            Description
+          </label>
+          <Field
+            id="description"
+            type="text"
+            name="description"
+            className="block mb-3"
+            placeholder="Description"
+          />
+        </div>
         <button className="btn bg-dark text-white" type="submit">
           Submit
         </button>
-        {error && <div>{error}</div>}
       </Form>
     </Formik>
   );

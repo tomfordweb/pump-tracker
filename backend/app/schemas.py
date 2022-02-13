@@ -95,9 +95,11 @@ class Microcycle(MicrocycleBase):
 
 class ExerciseBase(BaseModel):
     name: str
+    description: str
+    avatar_id: Optional[int]
 
-class ExerciseUpdate(BaseModel):
-    name: Optional[str]
+class ExerciseUpdate(ExerciseBase):
+    pass
 
 class ExerciseCreate(ExerciseBase):
     pass

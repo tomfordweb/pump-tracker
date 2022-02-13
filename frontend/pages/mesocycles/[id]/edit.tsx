@@ -12,6 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import MicrocycleEditor from "../../../components/plan/MicrocycleEditor";
 import { getAllWorkouts, selectWorkouts } from "../../../features/workoutSlice";
+import { Field, Form, Formik } from "formik";
 
 const WorkoutPlanEdit = () => {
   const router = useRouter();
@@ -47,11 +48,43 @@ const WorkoutPlanEdit = () => {
   return plan ? (
     <div>
       <section>
-        <PageHeader title={`Edit Plan: ${plan.name}`} />
+        <PageHeader title={`Edit Mesocycle: ${plan.name}`} />
+      </section>
+      <section className="mb-5">
+        <Formik initialValues={plan} onSubmit={(values, actions) => {}}>
+          <Form>
+            <div>
+              <label htmlFor="name" className="block">
+                Mesocycle name
+              </label>
+              <Field
+                id="name"
+                type="text"
+                name="name"
+                className="block mb-3"
+                placeholder="The ultimate full body workout"
+              />
+            </div>
+            <div>
+              <label htmlFor="length_in_days" className="block">
+                Length in days
+              </label>
+              <Field
+                id="length_in_days"
+                type="number"
+                name="length_in_days"
+                className="block mb-3"
+              />
+            </div>
+            <button className="btn bg-dark text-white" type="submit">
+              Submit
+            </button>
+          </Form>
+        </Formik>
       </section>
       <section>
         <MicrocycleEditor
-          microcycle={plan.sessions}
+          plan={plan}
           onAddSession={(data) => addSessionToMicrocycle(data)}
           onRemoveSession={(data) => removeSessionFromMicrocycle(data)}
           workouts={workouts}

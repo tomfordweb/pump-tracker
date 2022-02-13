@@ -23,7 +23,7 @@ def create_exercise(db: Session, exercise: schemas.ExerciseCreate, user: schemas
     return db_item
 
 def update_exercise(db: Session, exercise_id:int, exercise: schemas.ExerciseUpdate):
-    update_data = exercise.dict(exclude_unset=True)
+    update_data = exercise.dict()
     db.query(models.Exercise).filter(models.Exercise.id == exercise_id).update(update_data)
     db.commit()
     return get_exercise(db, exercise_id)
