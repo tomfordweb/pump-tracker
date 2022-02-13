@@ -19,7 +19,7 @@ const Exercises = () => {
       <PageHeader title="Exercises List" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {exercises.map((exercise) => (
-          <div className="cursor-pointer">
+          <div key={exercise.id} className="cursor-pointer">
             <Link href={`/exercises/${exercise.id}`}>
               <div>
                 <ExerciseMiniCard key={exercise.id} exercise={exercise} />

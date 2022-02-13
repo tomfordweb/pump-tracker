@@ -55,7 +55,11 @@ export const DefaultLayout = (props: Props) => {
       <footer>
         <p>
           &copy;{" "}
-          <a href="https://github.com/tomfordweb" target="_blank">
+          <a
+            rel="noreferrer"
+            href="https://github.com/tomfordweb"
+            target="_blank"
+          >
             tomfordweb
           </a>{" "}
           {date.getFullYear()}
