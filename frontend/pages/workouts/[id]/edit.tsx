@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import {
   deleteFromApi,
   generateJwtHeaders,
-  getFromApi,
   postJsonToApi,
 } from "../../../client";
 import ExerciseForm from "../../../components/exercise/exercise-form";
@@ -60,15 +59,7 @@ const WorkoutEdit = () => {
         <header>
           <h2>Create a new exercise for {workout.name}</h2>
         </header>
-        <ExerciseForm
-          onSubmit={(createdExercise) =>
-            postJsonToApi(
-              `/workouts/${workout.id}/exercises/${createdExercise.id}`,
-              {},
-              generateJwtHeaders(token)
-            ).then(() => updateWorkoutApi())
-          }
-        />
+        <ExerciseForm />
       </section>
     </div>
   ) : null;

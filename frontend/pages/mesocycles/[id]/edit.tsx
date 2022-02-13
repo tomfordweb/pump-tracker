@@ -10,7 +10,7 @@ import {
   selectWorkoutPlanById,
 } from "../../../features/mesocycleSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import MicrocycleEditor from "../../../components/plan/MicrocycleEditor";
+import MicrocycleEditor from "../../../components/microcycle/microcycle-editor";
 import { getAllWorkouts, selectWorkouts } from "../../../features/workoutSlice";
 import { Field, Form, Formik } from "formik";
 

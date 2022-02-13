@@ -27,14 +27,6 @@ const ExerciseEdit = () => {
   const updateExerciseApi = () =>
     dispatch(getExerciseById({ exercise: exerciseId, token: token }));
 
-  const handleFormSubmit = (exerciseCreate: ExerciseCreate) => {
-    // postJsonToApi(
-    //   `/workouts/${workout.id}/exercises/${createdExercise.id}`,
-    //   {},
-    //   generateJwtHeaders(token)
-    // ).then(() => updateWorkoutApi());
-  };
-
   useEffect(() => {
     updateExerciseApi();
   }, [exerciseId]);
@@ -43,10 +35,7 @@ const ExerciseEdit = () => {
     <div>
       <PageHeader title={`Edit Exercise: ${exercise.name}`} />
       <section>
-        <ExerciseForm
-          values={exercise}
-          onSubmit={(createdExercise) => handleFormSubmit(createdExercise)}
-        />
+        <ExerciseForm values={exercise} />
       </section>
     </div>
   ) : null;

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { generateJwtHeaders, getFromApi, postJsonToApi } from "../../client";
+import { generateJwtHeaders, getFromApi } from "../../client";
 import { selectToken } from "../../features/auth/authSlice";
-import { Exercise } from "../../features/workoutSlice";
+import { Exercise } from "../../features/exerciseSlice";
 import { useAppSelector } from "../../hooks";
 import ExerciseMiniCard from "../exercise/exercise-mini-card";
-import Grid from "../grid";
 
 interface Props {
   exercises: Exercise[];

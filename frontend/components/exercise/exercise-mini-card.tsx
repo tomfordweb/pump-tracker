@@ -1,8 +1,4 @@
-import { useEffect, useState } from "react";
-import { generateJwtHeaders, getFromApi, postJsonToApi } from "../../client";
-import { selectToken } from "../../features/auth/authSlice";
-import { Exercise } from "../../features/workoutSlice";
-import { useAppSelector } from "../../hooks";
+import { Exercise } from "../../features/exerciseSlice";
 
 interface Props {
   exercise: Exercise;

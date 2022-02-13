@@ -12,10 +12,9 @@ import {
 } from "../../features/exerciseSlice";
 
 interface Props {
-  onSubmit: (data: ExerciseCreate) => void;
   values?: Exercise;
 }
-const ExerciseForm = ({ values, onSubmit }: Props) => {
+const ExerciseForm = ({ values }: Props) => {
   const initialValues: ExerciseCreate | Exercise = {
     is_public: false,
     avatar_id: "",
