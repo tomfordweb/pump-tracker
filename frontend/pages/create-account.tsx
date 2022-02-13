@@ -20,9 +20,7 @@ const CreateAccount: NextPage = () => {
   };
 
   const loginWithNewAccount = async (data: TokenCreate) => {
-    await dispatch(loginToAccount(data))
-      .unwrap()
-      .then((data) => console.log(data));
+    await dispatch(loginToAccount(data)).unwrap();
   };
 
   return (

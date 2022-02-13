@@ -51,7 +51,6 @@ export const mesocycleSlice = createSlice({
     builder.addCase(
       addWorkoutSessionToMicrocycle.fulfilled,
       (state, { payload }) => {
-        console.log("added", payload);
         state.plans = state.plans.map((plan) => {
           if (plan.id == payload.id) {
             plan.sessions = payload.data;
@@ -63,7 +62,6 @@ export const mesocycleSlice = createSlice({
     builder.addCase(
       removeWorkoutSessionFromMicrocycle.fulfilled,
       (state, { payload }) => {
-        console.log("removed", payload);
         state.plans = state.plans.map((plan) => {
           if (plan.id == payload.id) {
             plan.sessions = payload.data;
