@@ -70,7 +70,7 @@ export const createNewWorkoutPlan = createAsyncThunk<
 >("workout-plans/create", async ({ plan, token }, { rejectWithValue }) => {
   try {
     return await postJsonToApi(
-      "/workout-plan",
+      "/microcycles",
       plan,
       generateJwtHeaders(token)
     ).then((data) => data.json());
@@ -87,7 +87,7 @@ export const getAllWorkoutPlans = createAsyncThunk<
   { rejectValue: boolean }
 >("workout-plans/get-list", async ({ token }, { rejectWithValue }) => {
   try {
-    return await getFromApi("/workout-plan", generateJwtHeaders(token)).then(
+    return await getFromApi("/microcycles", generateJwtHeaders(token)).then(
       (data) => data.json()
     );
   } catch (err) {
@@ -108,7 +108,7 @@ export const getWorkoutPlanById = createAsyncThunk<
       return rejectWithValue(false);
     }
     return await getFromApi(
-      `/workout-plan/${plan}`,
+      `/microcycles/${plan}`,
       generateJwtHeaders(token)
     ).then((data) => data.json());
   } catch (err) {

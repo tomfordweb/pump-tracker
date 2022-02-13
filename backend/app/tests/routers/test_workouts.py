@@ -1,21 +1,11 @@
 import pytest
 
 from ..app import client
-from ..fixtures import (TESTING_ACCOUNT_DETAILS, create_access_token_for_user,
+from ..fixtures import (TESTING_ACCOUNT_DETAILS, WORKOUT_CREATE,
+                        create_access_token_for_user, create_basic_workout,
                         create_testing_account, get_token_headers,
                         truncate_database)
 
-WORKOUT_CREATE = {"name": "My test workout", "is_public": False, "description": "Test Workout"}
-
-
-@pytest.fixture
-def create_basic_workout(get_token_headers):
-    response = client.post(
-            "/workouts",
-            headers=get_token_headers,
-            json=WORKOUT_CREATE
-    )
-    return response
 
 def test_that_an_unauthenticated_user_cannot_create_a_workout(truncate_database):
     response = client.post(

@@ -9,11 +9,20 @@ TESTING_ACCOUNT_DETAILS = {
     "password2": "secret"
 }
 
+
+WORKOUT_CREATE = {
+    "name": "My test workout", 
+    "is_public": False, 
+    "description": 
+    "Test Workout"
+}
+
 @pytest.fixture
 def truncate_database():
     session = TestingSessionLocal()
     session.execute('''DELETE FROM users''')
     session.execute('''DELETE FROM workouts''')
+    session.execute('''DELETE FROM microcycle_workout''')
     session.execute('''DELETE FROM plans''')
     session.execute('''DELETE FROM exercises''')
     session.commit()
@@ -47,3 +56,12 @@ def get_token_headers(create_access_token_for_user):
     token = create_access_token_for_user.json().get('access_token')
     assert token is not None
     return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture
+def create_basic_workout(get_token_headers):
+    response = client.post(
+            "/workouts",
+            headers=get_token_headers,
+            json=WORKOUT_CREATE
+    )
+    return response

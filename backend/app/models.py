@@ -27,12 +27,12 @@ workout_exercise_association_table = Table('workout_exercise', Base.metadata,
 )
 
 class PlanWorkout(Base):
-    __tablename__ = 'plan_workout'
+    __tablename__ = 'microcycle_workout'
+
     plan_id = Column(Integer, ForeignKey('plans.id'), primary_key=True)
     workout_id = Column(Integer, ForeignKey('workouts.id'), primary_key=True)
     microcycle_index = Column(Integer)
-    plan = relationship("Plan", back_populates="workouts")
-    workout = relationship("Workout", back_populates="plans")
+
 
 class Workout(Base):
     """
@@ -50,7 +50,7 @@ class Workout(Base):
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
 
-    plans = relationship("PlanWorkout",  back_populates="workout")
+    plans = relationship("PlanWorkout",  backref="workouts", primaryjoin=id == PlanWorkout.workout_id)
     exercises = relationship("Exercise", secondary=workout_exercise_association_table)
 
 class Plan(Base):
@@ -72,7 +72,7 @@ class Plan(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="workout_plans")
 
-    workouts = relationship("PlanWorkout", back_populates="plan")
+    workout_sessions = relationship("PlanWorkout",  backref="plans", primaryjoin=id == PlanWorkout.plan_id)
 
 
 class Exercise(Base):

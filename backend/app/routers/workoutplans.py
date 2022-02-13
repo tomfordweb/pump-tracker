@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from .. import crud, schemas
@@ -11,28 +11,45 @@ async def create_workout(workout: schemas.PlanCreate, current_user: schemas.User
     return workout
 
 @router.get("/microcycles")
-async def get_workout_plans(current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
-    plans = crud.get_plans(db)
+async def get_all_microcycles(current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+    plans = crud.get_microcycles(db)
     return plans
 
 @router.get("/microcycles/{plan_id}")
-async def get_workout_plan(plan_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
-    plan = crud.get_plan(db, plan_id)
+async def get_microcycle(plan_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+    plan = crud.get_microcycle(db, plan_id)
     return plan
 
+# TODO: Add ordering!
+@router.get("/microcycles/{plan_id}/sessions")
+async def get_microcycle_sessions(plan_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+    plan = crud.get_microcycle(db, plan_id)
+    return plan.workout_sessions
+
 @router.post("/microcycles/{plan_id}/{workout_id}")
-async def add_workout_to_plan(plan_id:int, workout_id:int, data: schemas.WorkoutPlanWorkoutAssociate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+async def add_scheduled_workout_to_microcycle(plan_id:int, workout_id:int, data: schemas.WorkoutPlanWorkoutAssociate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
     workout = crud.get_workout(db, workout_id)
+    micro = crud.get_microcycle(db, plan_id)
+    
+    item = crud.def_add_workout_to_microcycle(db, data, micro, workout)
 
-    plan = crud.get_plan(db, plan_id)
-    plan.workouts.append(workout)
+    return item
 
-    return workout
+@router.delete("/microcycles/{microcycle_id}/{workout_id}/{microcycle_index}")
+async def remove_workout_session_from_microcycle(
+        microcycle_id:int, 
+        workout_id:int, 
+        microcycle_index: int, 
+        current_user: schemas.User = Depends(get_current_active_user), 
+        db: Session = Depends(get_db) 
+    ):
+    to_remove = crud.get_microcycle_workout_by_session(db, microcycle_id, workout_id, microcycle_index);
+    if to_remove is None:
+        raise HTTPException(
+            status_code=404,
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    db.delete(to_remove)
+    db.commit();
 
-@router.delete("/microcycles/{plan_id}/{workout_id}")
-async def remove_workout_from_plan(plan_id:int, workout_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
-    # Tthis is 
-    plan = crud.get_plan(db, workout_id)
-    workout = crud.get_workout(db, workout_id)
-    plan.workouts.remove(workout)
-    return workout
+    return True

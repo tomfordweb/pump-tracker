@@ -20,7 +20,7 @@ class WorkoutCreate(WorkoutBase):
     pass
 
 class WorkoutPlanWorkoutAssociate(BaseModel):
-    session_index:int
+    microcycle_index:int
     pass
 
 class UserBase(BaseModel):

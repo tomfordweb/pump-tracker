@@ -79,13 +79,30 @@ def update_workout(db: Session, workout_id:int, workout: schemas.WorkoutUpdate):
     
 
 """
-Plan/Routine CRUD
+Microcycle/Plan/Routine CRUD
 """
-def get_plans(db: Session, skip: int = 0, limit: int = 100):
+def get_microcycles(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Plan).offset(skip).limit(limit).all()
 
-def get_plan(db: Session, plan_id: int):
+def get_microcycle(db: Session, plan_id: int):
     return db.query(models.Plan).filter(models.Plan.id == plan_id).first()
+
+def get_plan_workouts(db: Session, plan_id: int):
+    return db.query(models.PlanWorkout).all()
+
+def def_add_workout_to_microcycle(db: Session, data: schemas.WorkoutPlanWorkoutAssociate, plan: schemas.Plan, workout: schemas.Workout):
+    db_item = models.PlanWorkout(microcycle_index=data.microcycle_index, plan_id=plan.id, workout_id=workout.id)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+def get_microcycle_workout_by_session(db: Session, microcycle_id: int, workout_id: int, microcycle_index: int):
+    return db.query(models.PlanWorkout).filter(
+        models.PlanWorkout.plan_id == microcycle_id, 
+        models.PlanWorkout.workout_id == workout_id,
+        models.PlanWorkout.microcycle_index == microcycle_index
+    ).first()
 
 # TODO: is this used?
 def create_user_workout_plan(db: Session, plan: schemas.PlanCreate, user: schemas.User):
