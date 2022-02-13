@@ -43,7 +43,7 @@ docker-compose run -f docker-compose.yml -f docker-compose.e2e.yml --build --abo
 ### Create a migration
 
 ```
-alembic revision -m "name of migration"
+alembic revision -m "name of migration" --autogenerate
 ```
 
 ### Run a migration
