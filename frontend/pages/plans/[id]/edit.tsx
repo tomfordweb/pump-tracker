@@ -1,10 +1,12 @@
 import { useRouter } from "next/router";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useEffect } from "react";
 import PageHeader from "../../../components/page-header";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
+  addWorkoutSessionToMicrocycle,
   getWorkoutPlanById,
+  MicrocycleSession,
+  removeWorkoutSessionFromMicrocycle,
   selectWorkoutPlanById,
 } from "../../../features/planSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -24,6 +26,16 @@ const WorkoutPlanEdit = () => {
   const updateWorkoutPlanApi = () =>
     dispatch(getWorkoutPlanById({ plan: planId, token: token }));
 
+  const removeSessionFromMicrocycle = (props: MicrocycleSession) => {
+    dispatch(
+      removeWorkoutSessionFromMicrocycle({ token: token, session: props })
+    );
+  };
+
+  const addSessionToMicrocycle = (props: MicrocycleSession) => {
+    dispatch(addWorkoutSessionToMicrocycle({ token: token, session: props }));
+  };
+
   useEffect(() => {
     updateWorkoutPlanApi();
   }, [planId]);
@@ -38,7 +50,12 @@ const WorkoutPlanEdit = () => {
         <PageHeader title={`Edit Plan: ${plan.name}`} />
       </section>
       <section>
-        <MicrocycleEditor workouts={workouts} />
+        <MicrocycleEditor
+          microcycle={plan.sessions}
+          onAddSession={(data) => addSessionToMicrocycle(data)}
+          onRemoveSession={(data) => removeSessionFromMicrocycle(data)}
+          workouts={workouts}
+        />
       </section>
     </div>
   ) : null;

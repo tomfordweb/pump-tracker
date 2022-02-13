@@ -9,11 +9,13 @@ import { createNewWorkoutPlan } from "../../features/planSlice";
 interface MyFormValues {
   name: string;
   description: string;
+  length_in_days: number;
 }
 const ExercisePlanCreate = () => {
   const router = useRouter();
   const initialValues: MyFormValues = {
     name: "",
+    length_in_days: 7,
     description: "",
   };
   const token = useAppSelector((state) => state.auth.token);
@@ -55,6 +57,17 @@ const ExercisePlanCreate = () => {
             name="description"
             className="block mb-3"
             placeholder="The best meso cycle"
+          />
+        </div>
+        <div>
+          <label className="block" htmlFor="length_in_days">
+            Rotation Length (days)
+          </label>
+          <Field
+            type="number"
+            id="length_in_days"
+            name="length_in_days"
+            className="block mb-3"
           />
         </div>
         <button className="btn bg-dark text-white" type="submit">

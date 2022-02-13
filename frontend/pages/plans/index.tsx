@@ -28,7 +28,10 @@ const Plans = () => {
   }, [token]);
   return (
     <div>
-      <PageHeader title="Exercise Plans" />
+      <PageHeader
+        title="Exercise Plans"
+        rightContent={<Link href={`/plans/create`}>Create New</Link>}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {plans.map((plan) => (
           <div key={plan.id} className="cursor-pointer">

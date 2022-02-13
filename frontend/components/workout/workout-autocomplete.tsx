@@ -40,7 +40,7 @@ const WorkoutAutocomplete = ({ workouts, selectWorkout }: Props) => {
       );
     })
     .map((filteredWorkout) => (
-      <div className="border border-dark m-1">
+      <div key={filteredWorkout.id} className="border border-dark m-1">
         <WorkoutMiniCard
           active={highlightedWorkout === filteredWorkout.id}
           onClick={(id) => setHighlightedWorkout(id)}
@@ -64,26 +64,26 @@ const WorkoutAutocomplete = ({ workouts, selectWorkout }: Props) => {
           return setShowResultsList(true);
         }
         if (e.currentTarget === e.target) {
-          console.log("focused self");
+          // console.log("focused self");
         } else {
-          console.log("focused child", e.target);
+          // console.log("focused child", e.target);
         }
         if (!e.currentTarget.contains(e.relatedTarget)) {
           // Not triggered when swapping focus between children
-          console.log("focus entered self");
+          // console.log("focus entered self");
         }
       }}
       onBlur={(e) => {
         if (e.currentTarget === e.target) {
           setShowResultsList(false);
           setHighlightedWorkout(0);
-          console.log("unfocused self");
+          // console.log("unfocused self");
         } else {
-          console.log("unfocused child", e.target);
+          // console.log("unfocused child", e.target);
         }
         if (!e.currentTarget.contains(e.relatedTarget)) {
           // Not triggered when swapping focus between children
-          console.log("focus left self");
+          // console.log("focus left self");
         }
       }}
       className="relative"

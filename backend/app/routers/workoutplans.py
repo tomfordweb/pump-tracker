@@ -24,6 +24,12 @@ async def get_microcycle(plan_id:int, current_user: schemas.User = Depends(get_c
 @router.get("/microcycles/{plan_id}/sessions")
 async def get_microcycle_sessions(plan_id:int, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
     plan = crud.get_microcycle(db, plan_id)
+    if plan is None:
+        raise HTTPException(
+            status_code=404,
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+
     return plan.workout_sessions
 
 @router.post("/microcycles/{plan_id}/{workout_id}")

@@ -1,16 +1,23 @@
 import { XIcon } from "@heroicons/react/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { MicrocycleSession } from "../../features/planSlice";
 import { selectWorkoutById, Workout } from "../../features/workoutSlice";
 import WorkoutAutocomplete from "../workout/workout-autocomplete";
 import WorkoutMiniCard from "../workout/workout-mini-card";
 
 interface Props {
   workouts: Workout[];
+  microcycle: MicrocycleSession[];
+  onAddSession?: (data: MicrocycleSession) => void;
+  onRemoveSession?: (data: MicrocycleSession) => void;
 }
-const MicrocycleEditor = ({ workouts }: Props) => {
-  const [microcycle, setMicrocycle] = useState<
-    Array<{ sessionNumber: number; workoutId: number }>
-  >([]);
+
+const MicrocycleEditor = ({
+  onAddSession,
+  onRemoveSession,
+  microcycle,
+  workouts,
+}: Props) => {
   const [microcycleLength, setMicrocycleLength] = useState(7);
   const [sessionCount, setSessionCount] = useState(3);
 
@@ -37,19 +44,21 @@ const MicrocycleEditor = ({ workouts }: Props) => {
     setSessionCount(sessionIndexes.length);
   };
 
-  const removeFromMicrocycle = (sessionNumber: number, workoutId: number) => {
-    console.log(microcycle, sessionNumber, workoutId);
-    setMicrocycle(
-      microcycle.filter(
-        (m) => !(m.sessionNumber === sessionNumber && m.workoutId === workoutId)
-      )
-    );
-  };
-  const addToMicrocycle = (sessionNumber: number, workoutId: number) => {
-    setMicrocycle([...microcycle, { sessionNumber, workoutId }]);
+  const removeFromMicrocycle = (
+    microcycle_index: number,
+    workout_id: number
+  ) => {
+    if (onRemoveSession) {
+      onRemoveSession({ microcycle_index, workout_id, microcycle_id: 1 });
+    }
   };
 
-  console.log(microcycle);
+  const addToMicrocycle = (microcycle_index: number, workout_id: number) => {
+    if (onAddSession) {
+      onAddSession({ microcycle_index, workout_id, microcycle_id: 1 });
+    }
+  };
+
   return (
     <section>
       <header className="flex flex-wrap">
@@ -73,10 +82,10 @@ const MicrocycleEditor = ({ workouts }: Props) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
           {Array.from(Array(microcycleLength || 1).keys()).map((m) => {
             const microcycleCurrentWorkouts = microcycle
-              .filter((l) => l.sessionNumber === m)
+              .filter((l) => l.microcycle_index === m)
               .map(
                 (h) =>
-                  workouts.filter((workout) => workout.id === h.workoutId)[0]
+                  workouts.filter((workout) => workout.id === h.workout_id)[0]
               );
 
             const microcycleWorkoutKeys = microcycleCurrentWorkouts.map(
@@ -84,13 +93,13 @@ const MicrocycleEditor = ({ workouts }: Props) => {
             );
 
             const isRestDay =
-              microcycle.filter((l) => l.sessionNumber === m).length === 0;
+              microcycle.filter((l) => l.microcycle_index === m).length === 0;
 
             return (
               <div
                 key={m}
                 className={[
-                  microcycle.filter((l) => l.sessionNumber === m).length > 0
+                  microcycle.filter((l) => l.microcycle_index === m).length > 0
                     ? "bg-light"
                     : "bg-gray",
                   "p-3 border border-dark m-1",
@@ -104,7 +113,7 @@ const MicrocycleEditor = ({ workouts }: Props) => {
                   )}
                 </strong>
                 {microcycleCurrentWorkouts.map((workout: Workout) => (
-                  <div className="flex items-center relative">
+                  <div key={workout.id} className="flex items-center relative">
                     <WorkoutMiniCard
                       onClick={(e) => console.log(e)}
                       workout={workout}

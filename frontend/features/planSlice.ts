@@ -4,11 +4,22 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 
-import { generateJwtHeaders, getFromApi, postJsonToApi } from "../client";
+import {
+  deleteFromApi,
+  generateJwtHeaders,
+  getFromApi,
+  postJsonToApi,
+} from "../client";
 import { RootState } from "../store";
 
 interface WorkoutPlanState {
   plans: WorkoutPlan[];
+}
+
+export interface MicrocycleSession {
+  microcycle_id: number;
+  workout_id: number;
+  microcycle_index: number;
 }
 
 export interface WorkoutPlanBase {
@@ -22,6 +33,7 @@ export interface WorkoutPlan extends WorkoutPlanBase {
   id: number;
   avatar_id: number;
   owner_id: number;
+  sessions: MicrocycleSession[];
 }
 
 const initialState: WorkoutPlanState = {
@@ -33,6 +45,30 @@ export const workoutPlanSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(
+      addWorkoutSessionToMicrocycle.fulfilled,
+      (state, { payload }) => {
+        console.log("added", payload);
+        state.plans = state.plans.map((plan) => {
+          if (plan.id == payload.id) {
+            plan.sessions = payload.data;
+          }
+          return plan;
+        });
+      }
+    );
+    builder.addCase(
+      removeWorkoutSessionFromMicrocycle.fulfilled,
+      (state, { payload }) => {
+        console.log("removed", payload);
+        state.plans = state.plans.map((plan) => {
+          if (plan.id == payload.id) {
+            plan.sessions = payload.data;
+          }
+          return plan;
+        });
+      }
+    );
     builder.addCase(getAllWorkoutPlans.fulfilled, (state, { payload }) => {
       const { plans } = state;
       var existingIds = new Set(plans.map((d) => d.id));
@@ -95,6 +131,65 @@ export const getAllWorkoutPlans = createAsyncThunk<
   }
 });
 
+export const addWorkoutSessionToMicrocycle = createAsyncThunk<
+  { id: number; data: MicrocycleSession[] },
+  { session: MicrocycleSession; token: string },
+  { rejectValue: boolean }
+>(
+  "microcycle/add-workout-session",
+  async ({ token, session }, { rejectWithValue }) => {
+    try {
+      // add it
+      await postJsonToApi(
+        `/microcycles/${session.microcycle_id}/${session.workout_id}`,
+        session,
+        generateJwtHeaders(token)
+      ).then((data) => data.json());
+      // return a list of microcycle sessions
+      const data = await getFromApi(
+        `/microcycles/${session.microcycle_id}/sessions`,
+        generateJwtHeaders(token)
+      ).then((data) => data.json());
+      return {
+        id: session.microcycle_id,
+        data,
+      };
+    } catch (err) {
+      return rejectWithValue(false);
+    }
+  }
+);
+
+export const removeWorkoutSessionFromMicrocycle = createAsyncThunk<
+  { id: number; data: MicrocycleSession[] },
+  { session: MicrocycleSession; token: string },
+  { rejectValue: boolean }
+>(
+  "microcycle/remove-workout-session",
+  async ({ token, session }, { rejectWithValue }) => {
+    try {
+      // delete it
+      await deleteFromApi(
+        `/microcycles/${session.microcycle_id}/${session.workout_id}/${session.microcycle_index}`,
+        generateJwtHeaders(token)
+      ).then((data) => data.json());
+
+      // return a list of microcycle sessions
+      const data = await getFromApi(
+        `/microcycles/${session.microcycle_id}/sessions`,
+        generateJwtHeaders(token)
+      ).then((data) => data.json());
+
+      return {
+        id: session.microcycle_id,
+        data,
+      };
+    } catch (err) {
+      return rejectWithValue(false);
+    }
+  }
+);
+
 export const getWorkoutPlanById = createAsyncThunk<
   WorkoutPlan,
   {
@@ -107,10 +202,21 @@ export const getWorkoutPlanById = createAsyncThunk<
     if (isNaN(plan)) {
       return rejectWithValue(false);
     }
-    return await getFromApi(
+
+    const microcycle_base = await getFromApi(
       `/microcycles/${plan}`,
       generateJwtHeaders(token)
     ).then((data) => data.json());
+
+    const microcycle_sessions = await getFromApi(
+      `/microcycles/${plan}/sessions`,
+      generateJwtHeaders(token)
+    ).then((data) => data.json());
+
+    return {
+      ...microcycle_base,
+      sessions: microcycle_sessions,
+    };
   } catch (err) {
     return rejectWithValue(false);
   }

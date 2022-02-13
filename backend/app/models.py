@@ -28,9 +28,10 @@ workout_exercise_association_table = Table('workout_exercise', Base.metadata,
 
 class MicrocycleWorkout(Base):
     __tablename__ = 'microcycle_workout'
+    id = Column(Integer, primary_key=True, index=True)
 
-    microcycle_id = Column(Integer, ForeignKey('microcycles.id'), primary_key=True)
-    workout_id = Column(Integer, ForeignKey('workouts.id'), primary_key=True)
+    microcycle_id = Column(Integer, ForeignKey('microcycles.id'))
+    workout_id = Column(Integer, ForeignKey('workouts.id'))
     # TODO: Add user_id
 
     microcycle_index = Column(Integer)
