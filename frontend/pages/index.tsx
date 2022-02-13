@@ -1,11 +1,10 @@
 import type { NextPage } from "next";
+import PageHeader from "../components/page-header";
 
 const Home: NextPage = () => {
   return (
     <div>
-      <h1 className="text-3xl font-bold underline">
-        Welcome to the exercise tracker
-      </h1>
+      <PageHeader title="Welcome to the Exercise Tracker" />
     </div>
   );
 };

@@ -9,6 +9,8 @@ type Props = {
 export const DefaultLayout = (props: Props) => {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
+  const date = new Date();
+
   return (
     <div className="px-3">
       <nav className="py-5 flex justify-between">
@@ -19,8 +21,14 @@ export const DefaultLayout = (props: Props) => {
           <li className="mr-3 hover:text-light">
             <Link href="/dashboard">Dashboard</Link>
           </li>
-          <li className="hover:text-light">
+          <li className="mr-3 hover:text-light">
+            <Link href="/mesocycles">Mesocycles</Link>
+          </li>
+          <li className="mr-3 hover:text-light">
             <Link href="/workouts">Workouts</Link>
+          </li>
+          <li className="hover:text-light">
+            <Link href="/exercises">Exercises</Link>
           </li>
         </ul>
         <div>
@@ -43,7 +51,20 @@ export const DefaultLayout = (props: Props) => {
           )}
         </div>
       </nav>
-      <main>{props.children}</main>
+      <main className="min-h-screen">{props.children}</main>
+      <footer>
+        <p>
+          &copy;{" "}
+          <a
+            rel="noreferrer"
+            href="https://github.com/tomfordweb"
+            target="_blank"
+          >
+            tomfordweb
+          </a>{" "}
+          {date.getFullYear()}
+        </p>
+      </footer>
     </div>
   );
 };

@@ -1,7 +1,12 @@
 import { NextPage } from "next";
+import PageHeader from "../components/page-header";
 
 const Dashboard: NextPage = () => {
-  return <h1>Welcome to the dashboard</h1>;
+  return (
+    <section>
+      <PageHeader title="Welcome to the dashboard" />
+    </section>
+  );
 };
 
 export default Dashboard;

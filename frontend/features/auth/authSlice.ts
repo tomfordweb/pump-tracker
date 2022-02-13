@@ -140,6 +140,6 @@ export const loginToAccount = createAsyncThunk<
   }
 });
 
-export const selectToken = (state: RootState) => state.auth.token;
+export const selectToken = (state: RootState) => state.auth.token || "";
 
 export default authSlice.reducer;

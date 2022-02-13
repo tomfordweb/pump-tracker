@@ -19,8 +19,8 @@ class WorkoutBase(BaseModel):
 class WorkoutCreate(WorkoutBase):
     pass
 
-class WorkoutPlanWorkoutAssociate(BaseModel):
-    workout_id:int
+class MicrocycleWorkoutAssociate(BaseModel):
+    microcycle_index:int
     pass
 
 class UserBase(BaseModel):
@@ -75,16 +75,17 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-class PlanBase(BaseModel):
+class MicrocycleBase(BaseModel):
     name: str
     description: str
-    avatar_id: int
-    owner_id: int
+    length_in_days: int
 
-class PlanCreate(PlanBase):
+class MicrocycleCreate(MicrocycleBase):
     pass
 
-class Plan(PlanBase):
+class Microcycle(MicrocycleBase):
+    avatar_id: int
+    owner_id: int
     id: int
     date_updated: datetime.date
     date_created: datetime.date
@@ -94,9 +95,11 @@ class Plan(PlanBase):
 
 class ExerciseBase(BaseModel):
     name: str
+    description: str
+    avatar_id: Optional[int]
 
-class ExerciseUpdate(BaseModel):
-    name: Optional[str]
+class ExerciseUpdate(ExerciseBase):
+    pass
 
 class ExerciseCreate(ExerciseBase):
     pass
@@ -124,7 +127,6 @@ class User(UserBase):
     id: int
     username: str
     full_name: Optional[str] = None
-    workouts: List[Workout] = []
 
     class Config:
         orm_mode = True

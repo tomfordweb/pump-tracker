@@ -29,6 +29,19 @@ export function generateJwtHeaders(token: string | null) {
   };
 }
 
+export async function deleteFromApi(
+  url: string,
+  headers: Record<string, string> = {}
+) {
+  return fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+    method: "DELETE",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+  }).then(handleErrors);
+}
+
 export async function getFromApi(
   url: string,
   headers: Record<string, string> = {}
@@ -58,11 +71,26 @@ export async function postFormDataToApi(
 
 export async function postJsonToApi(
   url: string,
-  payload: Record<string, any>,
+  payload: Record<string, any> = {},
   headers: Record<string, string> = {}
 ): Promise<Response> {
   return fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
     method: "POST",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  }).then(handleErrors);
+}
+
+export async function putJsonToApi(
+  url: string,
+  payload: Record<string, any> = {},
+  headers: Record<string, string> = {}
+): Promise<Response> {
+  return fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+    method: "PUT",
     headers: {
       ...headers,
       "Content-Type": "application/json",

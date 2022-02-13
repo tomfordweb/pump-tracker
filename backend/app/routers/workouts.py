@@ -36,7 +36,7 @@ async def update_workout_detail(
     return workouts
 
 @router.get("/workouts/{workout_id}/exercises")
-async def get_workout_detail(
+async def get_workout_exercises(
         workout: schemas.Workout = Depends(get_public_workout_from_path)
     ):
     return workout.exercises

@@ -33,7 +33,7 @@ For now run it locally so you can use cy.open, it would work in the container th
 # Local
 npm run cypress:local
 # Pipelines, prod build testing
-docker-compose run -f docker-compose.yml -f docker-compose.e2e.yml --build --abort-on-container_exit --exit-code-from e2e
+docker-compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
 ```
 
 # DBA
@@ -43,7 +43,7 @@ docker-compose run -f docker-compose.yml -f docker-compose.e2e.yml --build --abo
 ### Create a migration
 
 ```
-alembic revision -m "name of migration"
+alembic revision -m "name of migration" --autogenerate
 ```
 
 ### Run a migration
