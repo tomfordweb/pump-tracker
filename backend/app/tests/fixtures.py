@@ -23,7 +23,7 @@ def truncate_database():
     session.execute('''DELETE FROM users''')
     session.execute('''DELETE FROM workouts''')
     session.execute('''DELETE FROM microcycle_workout''')
-    session.execute('''DELETE FROM plans''')
+    session.execute('''DELETE FROM microcycles''')
     session.execute('''DELETE FROM exercises''')
     session.commit()
     session.close()

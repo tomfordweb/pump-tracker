@@ -19,7 +19,7 @@ class WorkoutBase(BaseModel):
 class WorkoutCreate(WorkoutBase):
     pass
 
-class WorkoutPlanWorkoutAssociate(BaseModel):
+class MicrocycleWorkoutAssociate(BaseModel):
     microcycle_index:int
     pass
 
@@ -75,15 +75,15 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-class PlanBase(BaseModel):
+class MicrocycleBase(BaseModel):
     name: str
     description: str
     length_in_days: int
 
-class PlanCreate(PlanBase):
+class MicrocycleCreate(MicrocycleBase):
     pass
 
-class Plan(PlanBase):
+class Microcycle(MicrocycleBase):
     avatar_id: int
     owner_id: int
     id: int

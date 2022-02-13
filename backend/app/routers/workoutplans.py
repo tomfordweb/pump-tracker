@@ -6,8 +6,8 @@ from ..dependencies import get_current_active_user, get_db
 
 router = APIRouter()
 @router.post("/microcycles")
-async def create_workout(workout: schemas.PlanCreate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
-    workout = crud.create_user_workout_plan(db, workout, current_user)
+async def create_workout(workout: schemas.MicrocycleCreate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+    workout = crud.create_user_workout_microcycle(db, workout, current_user)
     return workout
 
 @router.get("/microcycles")
@@ -27,7 +27,7 @@ async def get_microcycle_sessions(plan_id:int, current_user: schemas.User = Depe
     return plan.workout_sessions
 
 @router.post("/microcycles/{plan_id}/{workout_id}")
-async def add_scheduled_workout_to_microcycle(plan_id:int, workout_id:int, data: schemas.WorkoutPlanWorkoutAssociate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
+async def add_scheduled_workout_to_microcycle(plan_id:int, workout_id:int, data: schemas.MicrocycleWorkoutAssociate, current_user: schemas.User = Depends(get_current_active_user), db: Session = Depends(get_db) ):
     workout = crud.get_workout(db, workout_id)
     micro = crud.get_microcycle(db, plan_id)
     

@@ -17,7 +17,7 @@ class User(Base):
 
     workouts = relationship("Workout", back_populates="owner")
     exercises = relationship("Exercise", back_populates="owner")
-    workout_plans = relationship("Plan", back_populates="owner")
+    microcycles = relationship("Microcycle", back_populates="owner")
 
 
 
@@ -26,11 +26,13 @@ workout_exercise_association_table = Table('workout_exercise', Base.metadata,
     Column('exercises_id', ForeignKey('exercises.id'))
 )
 
-class PlanWorkout(Base):
+class MicrocycleWorkout(Base):
     __tablename__ = 'microcycle_workout'
 
-    plan_id = Column(Integer, ForeignKey('plans.id'), primary_key=True)
+    microcycle_id = Column(Integer, ForeignKey('microcycles.id'), primary_key=True)
     workout_id = Column(Integer, ForeignKey('workouts.id'), primary_key=True)
+    # TODO: Add user_id
+
     microcycle_index = Column(Integer)
 
 
@@ -50,16 +52,16 @@ class Workout(Base):
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
 
-    plans = relationship("PlanWorkout",  backref="workouts", primaryjoin=id == PlanWorkout.workout_id)
+    microcycles = relationship("MicrocycleWorkout",  backref="workouts", primaryjoin=id == MicrocycleWorkout.workout_id)
     exercises = relationship("Exercise", secondary=workout_exercise_association_table)
 
-class Plan(Base):
+class Microcycle(Base):
     """
     A microcycle
     It contains many workouts
     """
 
-    __tablename__ = "plans"
+    __tablename__ = "microcycles"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
@@ -70,9 +72,9 @@ class Plan(Base):
     date_updated = Column(DateTime)
 
     owner_id = Column(Integer, ForeignKey("users.id"))
-    owner = relationship("User", back_populates="workout_plans")
+    owner = relationship("User", back_populates="microcycles")
 
-    workout_sessions = relationship("PlanWorkout",  backref="plans", primaryjoin=id == PlanWorkout.plan_id)
+    workout_sessions = relationship("MicrocycleWorkout",  backref="plans", primaryjoin=id == MicrocycleWorkout.microcycle_id)
 
 
 class Exercise(Base):

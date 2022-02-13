@@ -17,7 +17,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.models import Plan, PlanWorkout, User, Workout
+from app.models import Exercise, Microcycle, MicrocycleWorkout, User, Workout
 
 target_metadata = Base.metadata
 
