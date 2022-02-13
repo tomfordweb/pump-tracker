@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { Field, Form, Formik } from "formik";
-import { AppHttpError, generateJwtHeaders, postJsonToApi } from "../../client";
+import { AppHttpError } from "../../client";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useRouter } from "next/router";
-import { createNewWorkout, Workout } from "../../features/workoutSlice";
-import { createNewWorkoutPlan } from "../../features/planSlice";
+import {
+  createNewMesocycle,
+  MesocycleCreate,
+} from "../../features/mesocycleSlice";
 
-interface MyFormValues {
-  name: string;
-  description: string;
-  length_in_days: number;
-}
 const ExercisePlanCreate = () => {
   const router = useRouter();
-  const initialValues: MyFormValues = {
+  const initialValues: MesocycleCreate = {
     name: "",
     length_in_days: 7,
     description: "",
@@ -21,15 +18,16 @@ const ExercisePlanCreate = () => {
   const token = useAppSelector((state) => state.auth.token);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
+
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values, actions) => {
         setError("");
-        dispatch(createNewWorkoutPlan({ plan: values, token: token || "" }))
+        dispatch(createNewMesocycle({ plan: values, token: token || "" }))
           .unwrap()
           .then((data) => {
-            router.push(`/microcycles/${data.id}`);
+            router.push(`/mesocycles/${data.id}`);
           })
           .catch((error: AppHttpError) => setError(error.message));
       }}

@@ -1,14 +1,13 @@
 import { XIcon } from "@heroicons/react/solid";
 import { useState } from "react";
-import { MicrocycleSession, WorkoutPlan } from "../../features/planSlice";
+import { Mesocycle, MicrocycleSession } from "../../features/mesocycleSlice";
 import { Workout } from "../../features/workoutSlice";
-import PageHeader from "../page-header";
 import WorkoutAutocomplete from "../workout/workout-autocomplete";
 import WorkoutMiniCard from "../workout/workout-mini-card";
 
 interface Props {
   workouts: Workout[];
-  plan: WorkoutPlan;
+  plan: Mesocycle;
   onAddSession?: (data: MicrocycleSession) => void;
   onRemoveSession?: (data: MicrocycleSession) => void;
 }
@@ -74,16 +73,16 @@ const MicrocycleEditor = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
           {plan &&
             Array.from(Array(plan.length_in_days || 1).keys()).map((m) => {
-              const microcycleCurrentWorkouts =
-                plan?.sessions &&
-                plan.sessions
-                  .filter((l) => l.microcycle_index === m)
-                  .map(
-                    (h) =>
-                      workouts.filter(
-                        (workout) => workout.id === h.workout_id
-                      )[0]
-                  );
+              const microcycleCurrentWorkouts = plan?.sessions
+                ? plan.sessions
+                    .filter((l) => l.microcycle_index === m)
+                    .map(
+                      (h) =>
+                        workouts.filter(
+                          (workout) => workout.id === h.workout_id
+                        )[0]
+                    )
+                : [];
 
               const microcycleWorkoutKeys =
                 microcycleCurrentWorkouts &&

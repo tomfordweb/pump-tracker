@@ -2,16 +2,16 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import PageHeader from "../../../components/page-header";
-import MicrocycleEditor from "../../../components/plan/MicrocycleEditor";
+import MicrocycleEditor from "../../../components/microcycle/microcycle-editor";
 import { selectToken } from "../../../features/auth/authSlice";
 import {
   getWorkoutPlanById,
   selectWorkoutPlanById,
-} from "../../../features/planSlice";
+} from "../../../features/mesocycleSlice";
 import { getAllWorkouts, selectWorkouts } from "../../../features/workoutSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 
-const WorkoutPlan = () => {
+const MesocycleIdIndex = () => {
   const router = useRouter();
   const state = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
@@ -43,4 +43,4 @@ const WorkoutPlan = () => {
   ) : null;
 };
 
-export default WorkoutPlan;
+export default MesocycleIdIndex;

@@ -12,8 +12,8 @@ import {
 } from "../client";
 import { RootState } from "../store";
 
-interface WorkoutPlanState {
-  plans: WorkoutPlan[];
+interface MesocyclesState {
+  plans: Mesocycle[];
 }
 
 export interface MicrocycleSession {
@@ -22,29 +22,29 @@ export interface MicrocycleSession {
   microcycle_index: number;
 }
 
-export interface WorkoutPlanBase {
+export interface MesocycleBase {
   name: string;
   description: string;
+  length_in_days: number;
 }
 
-export interface WorkoutPlanCreate extends WorkoutPlanBase {}
+export interface MesocycleCreate extends MesocycleBase {}
 
-export interface WorkoutPlan extends WorkoutPlanBase {
+export interface Mesocycle extends MesocycleBase {
   id: number;
   avatar_id: number;
   owner_id: number;
-  length_in_days: number;
   date_created: string;
   date_updated: string;
   sessions: MicrocycleSession[];
 }
 
-const initialState: WorkoutPlanState = {
+const initialState: MesocyclesState = {
   plans: [],
 };
 
-export const workoutPlanSlice = createSlice({
-  name: "workoutPlans",
+export const mesocycleSlice = createSlice({
+  name: "mesocycles",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -72,7 +72,7 @@ export const workoutPlanSlice = createSlice({
         });
       }
     );
-    builder.addCase(getAllWorkoutPlans.fulfilled, (state, { payload }) => {
+    builder.addCase(getAllMesocycles.fulfilled, (state, { payload }) => {
       const { plans } = state;
       var existingIds = new Set(plans.map((d) => d.id));
       var merged = [...plans, ...payload.filter((d) => !existingIds.has(d.id))];
@@ -80,7 +80,7 @@ export const workoutPlanSlice = createSlice({
       state.plans = merged;
     });
 
-    builder.addCase(createNewWorkoutPlan.fulfilled, (state, { payload }) => {
+    builder.addCase(createNewMesocycle.fulfilled, (state, { payload }) => {
       state.plans.push(payload);
     });
 
@@ -99,14 +99,14 @@ export const workoutPlanSlice = createSlice({
   },
 });
 
-export const createNewWorkoutPlan = createAsyncThunk<
-  WorkoutPlan,
+export const createNewMesocycle = createAsyncThunk<
+  Mesocycle,
   {
-    plan: WorkoutPlanCreate;
+    plan: MesocycleCreate;
     token: string;
   },
   { rejectValue: boolean }
->("workout-plans/create", async ({ plan, token }, { rejectWithValue }) => {
+>("mesocycles/create", async ({ plan, token }, { rejectWithValue }) => {
   try {
     return await postJsonToApi(
       "/microcycles",
@@ -118,13 +118,32 @@ export const createNewWorkoutPlan = createAsyncThunk<
   }
 });
 
-export const getAllWorkoutPlans = createAsyncThunk<
-  WorkoutPlan[],
+export const updateMesocycle = createAsyncThunk<
+  Mesocycle,
+  {
+    plan: Mesocycle;
+    token: string;
+  },
+  { rejectValue: boolean }
+>("mesocycles/create", async ({ plan, token }, { rejectWithValue }) => {
+  try {
+    return await postJsonToApi(
+      "/microcycles",
+      plan,
+      generateJwtHeaders(token)
+    ).then((data) => data.json());
+  } catch (err) {
+    return rejectWithValue(false);
+  }
+});
+
+export const getAllMesocycles = createAsyncThunk<
+  Mesocycle[],
   {
     token: string;
   },
   { rejectValue: boolean }
->("workout-plans/get-list", async ({ token }, { rejectWithValue }) => {
+>("mesocycles/get-list", async ({ token }, { rejectWithValue }) => {
   try {
     return await getFromApi("/microcycles", generateJwtHeaders(token)).then(
       (data) => data.json()
@@ -194,13 +213,13 @@ export const removeWorkoutSessionFromMicrocycle = createAsyncThunk<
 );
 
 export const getWorkoutPlanById = createAsyncThunk<
-  WorkoutPlan,
+  Mesocycle,
   {
     plan: number;
     token: string;
   },
   { rejectValue: boolean }
->("workout-plans/get", async ({ plan, token }, { rejectWithValue }) => {
+>("mesocycles/get", async ({ plan, token }, { rejectWithValue }) => {
   try {
     if (isNaN(plan)) {
       return rejectWithValue(false);
@@ -234,4 +253,4 @@ export const selectWorkoutPlanById = createSelector(
   (plans, workoutPlanId) => plans.filter((plan) => plan.id == workoutPlanId)[0]
 );
 
-export default workoutPlanSlice.reducer;
+export default mesocycleSlice.reducer;

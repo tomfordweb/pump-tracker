@@ -8,7 +8,7 @@ import {
   MicrocycleSession,
   removeWorkoutSessionFromMicrocycle,
   selectWorkoutPlanById,
-} from "../../../features/planSlice";
+} from "../../../features/mesocycleSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import MicrocycleEditor from "../../../components/plan/MicrocycleEditor";
 import { getAllWorkouts, selectWorkouts } from "../../../features/workoutSlice";
